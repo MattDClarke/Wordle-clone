@@ -1,81 +1,14 @@
 import Head from 'next/head';
 import Image from 'next/image';
 
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
 import styles from '../styles/Home.module.css';
-import useGameState from '../hooks/useGameState';
 
-// basic version test variables
+import WordleGrid from '../components/WordleGrid';
+
 // TODO: get from back end API
 const solution = 'fresh';
-const WORD_LEN = 5;
-const ROWS_NUM = 6;
 
 export default function Home() {
-  const {
-    boardState,
-    rowIndex,
-    setRowIndex,
-    evaluationsState,
-    gameStatus,
-    setGameStatus,
-    boardStateUpdate,
-    evaluationsStateUpdate,
-  } = useGameState();
-
-  console.log(evaluationsState);
-
-  function generateRow(currRowIndex) {
-    if (currRowIndex === rowIndex) {
-      return (
-        <div key={currRowIndex}>
-          {' '}
-          {Array(WORD_LEN)
-            .fill(1)
-            .map((el, indx) => (
-              <TextField
-                key={indx}
-                id="outlined-basic"
-                label="Outlined"
-                variant="outlined"
-              />
-            ))}
-        </div>
-      );
-    }
-    return (
-      <div key={currRowIndex} style={{ display: 'flex' }}>
-        {Array(WORD_LEN)
-          .fill(1)
-          .map((el, indx) => (
-            <div
-              key={indx}
-              style={{
-                display: 'inline-block',
-                backgroundColor: 'red',
-                flex: 1,
-                width: '20px',
-                height: '20px',
-                border: '1px solid black',
-              }}
-            >
-              {evaluationsState[currRowIndex][indx]}
-              {console.log(currRowIndex, indx)}
-            </div>
-          ))}
-      </div>
-    );
-  }
-
-  function generateRows() {
-    const rows = [];
-    for (let currRowIndex = 0; currRowIndex < ROWS_NUM; currRowIndex += 1) {
-      rows.push(generateRow(currRowIndex));
-    }
-    return <div>{rows}</div>;
-  }
-
   return (
     <div className={styles.container}>
       <Head>
@@ -86,7 +19,7 @@ export default function Home() {
 
       <main className={styles.main}>
         <h1 className={styles.title}>Wordle Clone</h1>
-        {generateRows()}
+        <WordleGrid solution={solution} />
       </main>
 
       <footer className={styles.footer}>

@@ -3,8 +3,8 @@ import { useState } from 'react';
 // TODO: get from and save to local storage
 const boardStateInitial = ['', '', '', '', '', ''];
 const evaluationsInitial = [
-  ['asasdsdda', '', '', '', '', ''],
-  ['', 'asdas', '', '', '', ''],
+  ['', '', '', '', '', ''],
+  ['', '', '', '', '', ''],
   ['', '', '', '', '', ''],
   ['', '', '', '', '', ''],
   ['', '', '', '', '', ''],
@@ -13,14 +13,14 @@ const evaluationsInitial = [
 
 const rowIndexInitial = 0;
 const gameStatusInitial = 'active';
+const currWordInitial = ['', '', '', '', ''];
 
 export default function useGameState() {
   const [boardState, setBoardState] = useState(boardStateInitial);
   const [rowIndex, setRowIndex] = useState(rowIndexInitial);
   const [evaluationsState, setEvaluationsState] = useState(evaluationsInitial);
   const [gameStatus, setGameStatus] = useState(gameStatusInitial);
-
-  console.log(evaluationsState);
+  const [currWordState, setCurrWordState] = useState(currWordInitial);
 
   return {
     boardState,
@@ -29,16 +29,26 @@ export default function useGameState() {
     evaluationsState,
     gameStatus,
     setGameStatus,
+    currWordState,
+    setCurrWordState,
 
     boardStateUpdate: (guessedWord) => {
-      const newBoard = [...boardState];
-      newBoard[rowIndex] = guessedWord;
-      setBoardState(newBoard);
+      const newBoardState = [...boardState];
+      newBoardState[rowIndex] = guessedWord;
+      setBoardState(newBoardState);
     },
     evaluationsStateUpdate: (evaluation) => {
       const newEvaluations = [...evaluationsState];
       newEvaluations[rowIndex] = [...evaluation];
       setEvaluationsState(newEvaluations);
+    },
+    currWordStateUpdate: (e) => {
+      const letter = e.target.value;
+      const index = parseInt(e.target.getAttribute('dataindex'));
+      // dnt change mutable data types directly
+      const newCurrWordState = [...currWordState];
+      newCurrWordState[index] = letter;
+      setCurrWordState(newCurrWordState);
     },
   };
 }
