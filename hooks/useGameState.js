@@ -15,7 +15,7 @@ const rowIndexInitial = 0;
 const gameStatusInitial = 'active';
 const currWordInitial = ['', '', '', '', ''];
 
-export default function useGameState() {
+export default function useGameState(solution) {
   const [boardState, setBoardState] = useState(boardStateInitial);
   const [rowIndex, setRowIndex] = useState(rowIndexInitial);
   const [evaluationsState, setEvaluationsState] = useState(evaluationsInitial);
@@ -39,7 +39,20 @@ export default function useGameState() {
     },
     evaluationsStateUpdate: (evaluation) => {
       const newEvaluations = [...evaluationsState];
-      newEvaluations[rowIndex] = [...evaluation];
+      newEvaluations[rowIndex] = [...evaluation].map((item, i) => {
+        let letter = item;
+        console.log(evaluation, letter, solution);
+        if ([...solution].includes(letter)) {
+          if (letter !== solution[i]) {
+            letter = 'wrongPlace';
+          } else {
+            letter = 'correct';
+          }
+        } else {
+          letter = 'absent';
+        }
+        return letter;
+      });
       setEvaluationsState(newEvaluations);
     },
     currWordStateUpdate: (e) => {

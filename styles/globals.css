@@ -1,3 +1,11 @@
+:root {
+    --color-correct-light: #6aaa64;
+    --color-wrong-place-light: #c9b458;
+    --color-absent-light: #787c7e;
+    --color-un-used-light: #d3d6da;
+    --color-background-light: rgb(228, 228, 228);
+  }
+
 html,
 body {
   padding: 0;

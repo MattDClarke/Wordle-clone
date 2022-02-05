@@ -21,7 +21,7 @@ export default function WordleGrid({ solution }) {
     boardStateUpdate,
     evaluationsStateUpdate,
     currWordStateUpdate,
-  } = useGameState();
+  } = useGameState(solution);
 
   const enterPress = useKeyPress('Enter');
 
@@ -42,6 +42,8 @@ export default function WordleGrid({ solution }) {
           errorMsg = 'cant use same word twice';
           return;
         }
+        console.log(rowIndex, guessedWord);
+        evaluationsStateUpdate(guessedWord);
         boardStateUpdate(guessedWord);
       }
     }
@@ -52,6 +54,7 @@ export default function WordleGrid({ solution }) {
     boardStateUpdate,
     boardState,
     rowIndex,
+    evaluationsStateUpdate,
   ]);
 
   useEffect(() => {
@@ -65,6 +68,12 @@ export default function WordleGrid({ solution }) {
       setCurrWordState(['', '', '', '', '']);
     }
   }, [setCurrWordState, rowIndex]);
+
+  function determineColor(evaluation) {
+    if (evaluation === 'absent') return 'color-absent-light';
+    if (evaluation === 'wrongPlace') return 'color-wrong-place-light';
+    if (evaluation === 'correct') return 'color-correct-light';
+  }
 
   function generateRow(currRowIndex) {
     if (currRowIndex === rowIndex) {
@@ -86,6 +95,10 @@ export default function WordleGrid({ solution }) {
                   pattern: '[A-Za-z]',
                   dataindex: indx,
                 }}
+                sx={{
+                  width: '50px',
+                  height: '50px',
+                }}
               />
             ))}
         </div>
@@ -101,14 +114,19 @@ export default function WordleGrid({ solution }) {
               data-index={indx}
               style={{
                 display: 'inline-block',
-                backgroundColor: 'red',
                 flex: 1,
-                width: '20px',
-                height: '20px',
+                width: '50px',
+                height: '50px',
                 border: '1px solid black',
+                backgroundColor:
+                  currRowIndex < rowIndex
+                    ? `var(--${determineColor(
+                        evaluationsState[currRowIndex][indx]
+                      )})`
+                    : 'var(--color-background-light)',
               }}
             >
-              {evaluationsState[currRowIndex][indx]}
+              {boardState[currRowIndex][indx]}
             </div>
           ))}
       </div>
