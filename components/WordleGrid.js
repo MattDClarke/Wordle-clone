@@ -45,11 +45,16 @@ export default function WordleGrid({ solution }) {
         }
         evaluationsStateUpdate(guessedWord);
         boardStateUpdate(guessedWord);
+        if (guessedWord === solution) {
+          setGameStatus('win');
+        }
       }
     }
   }, [
     enterPress,
     gameStatus,
+    setGameStatus,
+    solution,
     currWordState,
     boardStateUpdate,
     boardState,
@@ -58,16 +63,32 @@ export default function WordleGrid({ solution }) {
   ]);
 
   useEffect(() => {
-    if (boardState[rowIndex] !== '' && rowIndex < ROWS_NUM) {
+    if (
+      boardState[rowIndex] !== '' &&
+      rowIndex < ROWS_NUM &&
+      // dont change row index if word guessed correctly
+      currWordState.join('') !== solution
+    ) {
       setRowIndex((prevState) => prevState + 1);
     }
-  }, [boardState, rowIndex, setRowIndex]);
+  }, [
+    boardState,
+    rowIndex,
+    setRowIndex,
+    setGameStatus,
+    solution,
+    currWordState,
+  ]);
 
   useEffect(() => {
-    if (rowIndex !== 0) {
-      setCurrWordState(['', '', '', '', '']);
+    if (rowIndex !== 0 && gameStatus === 'active') {
+      if (rowIndex === ROWS_NUM) {
+        setGameStatus('lose');
+      } else {
+        setCurrWordState(['', '', '', '', '']);
+      }
     }
-  }, [setCurrWordState, rowIndex]);
+  }, [setCurrWordState, rowIndex, gameStatus, setGameStatus]);
 
   function determineColor(evaluation) {
     if (evaluation === 'absent') return 'color-absent-light';
@@ -76,7 +97,7 @@ export default function WordleGrid({ solution }) {
   }
 
   function generateRow(currRowIndex) {
-    if (currRowIndex === rowIndex) {
+    if (currRowIndex === rowIndex && gameStatus === 'active') {
       return (
         <div key={currRowIndex}>
           {' '}
@@ -119,7 +140,7 @@ export default function WordleGrid({ solution }) {
                 height: '50px',
                 border: '1px solid black',
                 backgroundColor:
-                  currRowIndex < rowIndex
+                  currRowIndex <= rowIndex
                     ? `var(--${determineColor(
                         evaluationsState[currRowIndex][indx]
                       )})`
@@ -144,6 +165,8 @@ export default function WordleGrid({ solution }) {
   return (
     <>
       <div>{errorMsg}</div>
+      <div>{gameStatus === 'win' && 'You win!'}</div>
+      <div>{gameStatus === 'lose' && 'You lose'}</div>
       {generateRows()}
       <Keyboard
         boardState={boardState}
