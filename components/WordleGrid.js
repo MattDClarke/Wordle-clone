@@ -2,6 +2,7 @@ import TextField from '@mui/material/TextField';
 import { useEffect } from 'react';
 import useGameState from '../hooks/useGameState';
 import useKeyPress from '../hooks/useKeyPress';
+import Keyboard from '../lib/Keyboard';
 
 const WORD_LEN = 5;
 const ROWS_NUM = 6;
@@ -42,7 +43,6 @@ export default function WordleGrid({ solution }) {
           errorMsg = 'cant use same word twice';
           return;
         }
-        console.log(rowIndex, guessedWord);
         evaluationsStateUpdate(guessedWord);
         boardStateUpdate(guessedWord);
       }
@@ -145,6 +145,12 @@ export default function WordleGrid({ solution }) {
     <>
       <div>{errorMsg}</div>
       {generateRows()}
+      <Keyboard
+        boardState={boardState}
+        evaluationsState={evaluationsState}
+        solution={solution}
+        rowIndex={rowIndex}
+      />
     </>
   );
 }

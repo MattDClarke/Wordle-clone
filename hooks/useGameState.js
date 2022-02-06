@@ -41,7 +41,6 @@ export default function useGameState(solution) {
       const newEvaluations = [...evaluationsState];
       newEvaluations[rowIndex] = [...evaluation].map((item, i) => {
         let letter = item;
-        console.log(evaluation, letter, solution);
         if ([...solution].includes(letter)) {
           if (letter !== solution[i]) {
             letter = 'wrongPlace';
