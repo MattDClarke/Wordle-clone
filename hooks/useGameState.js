@@ -13,7 +13,7 @@ const evaluationsInitial = [
 
 const rowIndexInitial = 0;
 const gameStatusInitial = 'active';
-const currWordInitial = ['', '', '', '', ''];
+const currWordInitial = '';
 
 export default function useGameState(solution) {
   const [boardState, setBoardState] = useState(boardStateInitial);
@@ -57,10 +57,9 @@ export default function useGameState(solution) {
     currWordStateUpdate: (e) => {
       const letter = e.target.value;
       const index = parseInt(e.target.getAttribute('dataindex'));
-      // dnt change mutable data types directly
       const newCurrWordState = [...currWordState];
       newCurrWordState[index] = letter;
-      setCurrWordState(newCurrWordState);
+      setCurrWordState(newCurrWordState.join(''));
     },
   };
 }

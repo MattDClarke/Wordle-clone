@@ -10,6 +10,7 @@ const ROWS_NUM = 6;
 let errorMsg = '';
 
 export default function WordleGrid({ solution }) {
+  console.log('render');
   const {
     boardState,
     rowIndex,
@@ -30,22 +31,19 @@ export default function WordleGrid({ solution }) {
     errorMsg = '';
     if (gameStatus === 'active' && enterPress === true) {
       // make sure all letters filled in for current row
-      const numberOfLetters = currWordState.filter(
-        (letter) => letter !== ''
-      ).length;
+      const numberOfLetters = currWordState.length;
       if (numberOfLetters < 5) {
         if (numberOfLetters > 0) {
           errorMsg = 'not enough letters';
         }
       } else {
-        const guessedWord = currWordState.join('');
-        if (boardState.includes(guessedWord)) {
+        if (boardState.includes(currWordState)) {
           errorMsg = 'cant use same word twice';
           return;
         }
-        evaluationsStateUpdate(guessedWord);
-        boardStateUpdate(guessedWord);
-        if (guessedWord === solution) {
+        evaluationsStateUpdate(currWordState);
+        boardStateUpdate(currWordState);
+        if (currWordState === solution) {
           setGameStatus('win');
         }
       }
@@ -67,7 +65,7 @@ export default function WordleGrid({ solution }) {
       boardState[rowIndex] !== '' &&
       rowIndex < ROWS_NUM &&
       // dont change row index if word guessed correctly
-      currWordState.join('') !== solution
+      currWordState !== solution
     ) {
       setRowIndex((prevState) => prevState + 1);
     }
@@ -85,7 +83,7 @@ export default function WordleGrid({ solution }) {
       if (rowIndex === ROWS_NUM) {
         setGameStatus('lose');
       } else {
-        setCurrWordState(['', '', '', '', '']);
+        setCurrWordState('');
       }
     }
   }, [setCurrWordState, rowIndex, gameStatus, setGameStatus]);
@@ -106,7 +104,8 @@ export default function WordleGrid({ solution }) {
             .map((el, indx) => (
               <TextField
                 key={indx}
-                value={currWordState[indx]}
+                // if undefined (currWordState is a string - length may be less than indx) - set to ''
+                value={currWordState[indx] ?? ''}
                 onChange={currWordStateUpdate}
                 variant="outlined"
                 data-index={indx}
@@ -171,7 +170,7 @@ export default function WordleGrid({ solution }) {
       <Keyboard
         boardState={boardState}
         evaluationsState={evaluationsState}
-        solution={solution}
+        gameStatus={gameStatus}
         rowIndex={rowIndex}
       />
     </>
