@@ -1,12 +1,7 @@
 import Head from 'next/head';
 import Image from 'next/image';
-
 import styles from '../styles/Home.module.css';
-
-import WordleGrid from '../components/WordleGrid';
-
-// TODO: get from back end API
-const solution = 'fresh';
+import { Wordle } from '../components/Wordle';
 
 export default function Home() {
   return (
@@ -19,7 +14,7 @@ export default function Home() {
 
       <main className={styles.main}>
         <h1 className={styles.title}>Wordle Clone</h1>
-        <WordleGrid solution={solution} />
+        <Wordle />
       </main>
 
       <footer className={styles.footer}>
