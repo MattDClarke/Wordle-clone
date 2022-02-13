@@ -4,6 +4,7 @@ import { useHasMounted } from '../hooks/useHasMounted';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import Grid from './Grid';
 import Keyboard from './Keyboard';
+import MsgSnackbar from './MsgSnackbar';
 
 const wordLength = 5;
 const numOfRows = 6;
@@ -12,7 +13,6 @@ let gameStatus = '';
 const evaluationLetters = {};
 let evaluationGuesses = [];
 let wordList = [];
-let showSolution = '';
 
 export function Wordle() {
   const hasMounted = useHasMounted();
@@ -21,30 +21,18 @@ export function Wordle() {
     gameStateInitial
   );
   const [currGuess, setCurrGuess] = useState('');
-  const [msg, setMsg] = useState('');
-
-  // console.log(
-  //   { gameState },
-  //   { evaluationLetters },
-  //   { currRowIndex },
-  //   { gameStatus },
-  //   { currRowIndex },
-  //   { evaluationGuesses }
-  // );
-
-  if (hasMounted) {
-    currRowIndex = gameState.boardState.filter((guess) => guess !== '').length;
-    if (gameStatus === 'lose') {
-      showSolution = `The solution is: ${gameState.solution}`;
-    }
-  }
+  const [infoMsg, setInfoMsg] = useState('');
+  const [loseMsg, setLoseMsg] = useState('');
+  const [winMsg, setWinMsg] = useState('');
+  const [countInfoMsgs, setCountMsgs] = useState(0);
 
   const determineEvaluationsAndCurrRowIndex = useCallback(
     (boardState) => {
+      // setCurrGuess('');
+
       const solution = [...gameState.solution];
       // determine state of each letter for keyboard: 'absent, 'wrongPlace' or 'correct'
       const prevGuesses = boardState.filter((guess) => guess !== '');
-      currRowIndex = prevGuesses.length;
 
       evaluationGuesses = prevGuesses.map((guess) =>
         [...guess].map((letter, i) => {
@@ -88,6 +76,7 @@ export function Wordle() {
         }
         evaluationLetters[letter] = evaluation;
       });
+      currRowIndex = prevGuesses.length;
     },
     [gameState?.solution]
   );
@@ -107,12 +96,6 @@ export function Wordle() {
     [gameState?.solution]
   );
 
-  function gameStatusMsg() {
-    if (gameStatus === '' || gameStatus === 'active') return '';
-    if (gameStatus === 'lose' || gameStatus === 'active') return 'You lose';
-    if (gameStatus === 'win' || gameStatus === 'active') return 'You win';
-  }
-
   function handleKey(key) {
     const { boardState, solution } = gameState;
     if (boardState.length === 6) {
@@ -121,15 +104,14 @@ export function Wordle() {
     const letter = key.toLowerCase();
     if (letter === 'enter') {
       if (currGuess.length < 5) {
-        setMsg('Not enough letters');
+        setInfoMsg('Not enough letters');
+        setCountMsgs(countInfoMsgs + 1);
         return;
       }
       if (!wordList.includes(currGuess)) {
-        setMsg('Not in word list');
+        setInfoMsg('Not in word list');
+        setCountMsgs(countInfoMsgs + 1);
         return;
-      }
-      if (boardState.length === 5 && currGuess !== solution) {
-        setMsg(`The solution is: ${solution}`);
       }
       const newBoardState = [...boardState, currGuess];
       setGameState((prevState) => {
@@ -139,7 +121,13 @@ export function Wordle() {
         };
         return newGameState;
       });
-      setCurrGuess('');
+
+      if (boardState.length === 5 && currGuess !== solution) {
+        setLoseMsg(`The solution is: ${solution}`);
+      }
+      if (currGuess === solution) {
+        setWinMsg('You Win!');
+      }
     } else if (letter === 'backspace') {
       setCurrGuess(currGuess.slice(0, currGuess.length - 1));
     } else if (/^[a-z]$/.test(letter)) {
@@ -184,6 +172,7 @@ export function Wordle() {
   }, [setGameState]);
 
   useEffect(() => {
+    setCurrGuess('');
     determineEvaluationsAndCurrRowIndex(gameState.boardState);
     determineGameStatus(gameState.boardState);
   }, [determineEvaluationsAndCurrRowIndex, determineGameStatus, gameState]);
@@ -195,9 +184,24 @@ export function Wordle() {
 
   return (
     <div>
-      <div>{gameStatusMsg()}</div>
-      <div>{msg}</div>
-      <div>{showSolution !== '' && showSolution}</div>
+      <MsgSnackbar
+        msgType="info"
+        msg={infoMsg}
+        autoHideDuration={2000}
+        countMsgs={countInfoMsgs}
+      />
+      <MsgSnackbar
+        msgType="error"
+        msg={loseMsg}
+        autoHideDuration={10000}
+        countMsgs={1}
+      />
+      <MsgSnackbar
+        msgType="success"
+        msg={winMsg}
+        autoHideDuration={5000}
+        countMsgs={1}
+      />
       {/* if component not mounted (server render) - display initial game state.  */}
       {/* to make sure server render matches client render - only pass gameState to grid onMount */}
       {/* gameStateInitial acts as placeholder of empty values in grid */}

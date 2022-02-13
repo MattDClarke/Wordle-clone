@@ -21,6 +21,8 @@ export default function Keyboard({ evaluationLetters, handleKey, gameStatus }) {
   }
 
   function handleClick(e) {
+    // prevent setting currGuess state if game not active
+    //    after win and page refresh - prevent setting currGuess state
     if (gameStatus !== 'active') return;
     handleKey(e.target.value);
   }
@@ -37,6 +39,7 @@ export default function Keyboard({ evaluationLetters, handleKey, gameStatus }) {
               // TODO: change MUI button disabled and hover styling
               // disabled={gameStatus !== 'active'}
               onClick={handleClick}
+              // onClick={() => handleKey(letter)}
               sx={{
                 color: 'var(--color-text-light)',
                 backgroundColor: `var(--${determineButtonColor(letter)})`,
