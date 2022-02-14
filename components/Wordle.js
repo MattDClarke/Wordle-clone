@@ -98,7 +98,8 @@ export function Wordle() {
 
   function handleKey(key) {
     const { boardState, solution } = gameState;
-    if (boardState.length === 6) {
+    const boardStateLen = boardState.length;
+    if (boardStateLen === 6) {
       return;
     }
     const letter = key.toLowerCase();
@@ -122,11 +123,29 @@ export function Wordle() {
         return newGameState;
       });
 
-      if (boardState.length === 5 && currGuess !== solution) {
+      if (boardStateLen === 5 && currGuess !== solution) {
         setLoseMsg(`The solution is: ${solution}`);
       }
       if (currGuess === solution) {
-        setWinMsg('You Win!');
+        switch (boardStateLen) {
+          case 0:
+            setWinMsg('Well done!');
+            break;
+          case 1:
+            setWinMsg('Excellent!');
+            break;
+          case 2:
+            setWinMsg('Splendid!');
+            break;
+          case 3:
+            setWinMsg('Great!');
+            break;
+          case 4:
+            setWinMsg('Very good!');
+            break;
+          default:
+            setWinMsg('Good!');
+        }
       }
     } else if (letter === 'backspace') {
       setCurrGuess(currGuess.slice(0, currGuess.length - 1));

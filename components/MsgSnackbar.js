@@ -4,8 +4,7 @@ import Alert from '@mui/material/Alert';
 import Slide from '@mui/material/Slide';
 
 function TransitionDown(props) {
-  // eslint-disable-next-line
-    return <Slide {...props} direction="down" />;
+  return <Slide {...props} direction="down" />;
 }
 
 export default function MsgSnackbar({
