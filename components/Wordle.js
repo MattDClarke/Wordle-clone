@@ -5,6 +5,7 @@ import { useLocalStorage } from '../hooks/useLocalStorage';
 import Grid from './Grid';
 import Keyboard from './Keyboard';
 import MsgSnackbar from './MsgSnackbar';
+import { wordList } from '../lib/wordList';
 
 const wordLength = 5;
 const numOfRows = 6;
@@ -12,7 +13,6 @@ let currRowIndex = 0;
 let gameStatus = '';
 const evaluationLetters = {};
 let evaluationGuesses = [];
-let wordList = [];
 
 export function Wordle() {
   const hasMounted = useHasMounted();
@@ -164,23 +164,13 @@ export function Wordle() {
   }
 
   useEffect(() => {
-    // TODO - request word of the day from server AND list of allowed words
+    // TODO - request word of the day from server
     //   check date in local storage
     //     compare to today
     //       if today is a new day -> make request for new word
     //          else use state from local storage
     const randomWord = 'water';
-    const wordListFromServer = [
-      'water',
-      'crazy',
-      'human',
-      'hands',
-      'drink',
-      'power',
-      'great',
-      'women',
-    ];
-    wordList = wordListFromServer;
+
     setGameState((prevState) => {
       const newGameState = {
         ...prevState,

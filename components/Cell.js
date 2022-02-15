@@ -1,7 +1,9 @@
+import { Box } from '@mui/material';
+
 function determineColor(evaluation) {
-  if (evaluation === 'absent') return 'color-absent-light';
-  if (evaluation === 'wrongPlace') return 'color-wrong-place-light';
-  if (evaluation === 'correct') return 'color-correct-light';
+  if (evaluation === 'absent') return 'grey.500';
+  if (evaluation === 'wrongPlace') return 'warning.light';
+  if (evaluation === 'correct') return 'success.light';
 }
 
 function determineLetterToDisplay(
@@ -33,8 +35,8 @@ export default function Cell({
 }) {
   return (
     <div>
-      <div
-        style={{
+      <Box
+        sx={{
           display: 'inline-block',
           flex: 1,
           width: '50px',
@@ -44,10 +46,8 @@ export default function Cell({
             // color guessed words
             // check if evalutations for row exists
             rowIndex < currRowIndex && evaluationGuesses[rowIndex]
-              ? `var(--${determineColor(
-                  evaluationGuesses[rowIndex][letterIndex]
-                )})`
-              : 'var(--color-background-light)',
+              ? `${determineColor(evaluationGuesses[rowIndex][letterIndex])}`
+              : 'grey.200',
         }}
       >
         {determineLetterToDisplay(
@@ -57,7 +57,7 @@ export default function Cell({
           letterIndex,
           currGuess
         )}
-      </div>
+      </Box>
     </div>
   );
 }
