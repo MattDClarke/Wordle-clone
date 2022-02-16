@@ -1,15 +1,16 @@
+import { Box } from '@mui/material';
 import Button from '@mui/material/Button';
 
-const keyboardRow1 = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'];
-const keyboardRow2 = ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'];
-const keyboardRow3 = ['Enter', 'z', 'x', 'c', 'v', 'b', 'n', 'm', 'Backspace'];
+const keyboardRow1 = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'];
+const keyboardRow2 = ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'];
+const keyboardRow3 = ['ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'BACKSPACE'];
 const keyboardRows = [keyboardRow1, keyboardRow2, keyboardRow3];
 
 export default function Keyboard({ evaluationLetters, handleKey, gameStatus }) {
   function determineButtonColor(letter) {
     let letterGuessState;
 
-    if (letter === 'Enter' || letter === 'Backspace') {
+    if (letter === 'ENTER' || letter === 'BACKSPACE') {
       letterGuessState = '';
     } else {
       letterGuessState = evaluationLetters[letter];
@@ -29,30 +30,35 @@ export default function Keyboard({ evaluationLetters, handleKey, gameStatus }) {
   }
 
   return (
-    <div>
+    <Box sx={{ textAlign: 'center' }}>
       {keyboardRows.map((keyboardRow, i) => (
         <div key={i}>
-          {keyboardRow.map((letter) => (
-            <Button
-              variant="contained"
-              key={letter}
-              value={letter}
-              // TODO: change MUI button disabled and hover styling
-              // disabled={gameStatus !== 'active'}
-              onClick={handleClick}
-              sx={{
-                color: 'text.primary',
-                backgroundColor: `${determineButtonColor(letter)}`,
-                '&.MuiButtonBase-root:hover': {
-                  bgcolor: `${determineButtonColor(letter)}`,
-                },
-              }}
-            >
-              {letter}
-            </Button>
-          ))}
+          {keyboardRow.map((letter) => {
+            const buttonColor = determineButtonColor(letter);
+            return (
+              <Button
+                variant="contained"
+                key={letter}
+                value={letter}
+                disabled={gameStatus !== 'active'}
+                onClick={handleClick}
+                sx={{
+                  color: 'text.primary',
+                  backgroundColor: buttonColor,
+                  '&.MuiButtonBase-root:hover': {
+                    bgcolor: buttonColor,
+                  },
+                  '&.Mui-disabled': {
+                    bgcolor: buttonColor,
+                  },
+                }}
+              >
+                {letter}
+              </Button>
+            );
+          })}
         </div>
       ))}
-    </div>
+    </Box>
   );
 }

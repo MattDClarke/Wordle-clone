@@ -75,15 +75,6 @@ export function ColorModeProvider({ children }) {
               },
             },
           },
-          MuiButton: {
-            styleOverrides: {
-              // Name of the slot
-              containedPrimary: {
-                // Some CSS
-                transition: '0.5s',
-              },
-            },
-          },
         },
       }),
     [mode]

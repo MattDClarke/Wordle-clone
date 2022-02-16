@@ -1,4 +1,12 @@
+import { styled } from '@mui/material/styles';
 import Cell from './Cell';
+
+const GridStyles = styled('div')(() => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  paddingBottom: '1rem',
+}));
 
 function generateRow(
   rowIndex,
@@ -36,7 +44,7 @@ export default function Grid({
   currGuess,
 }) {
   return (
-    <div>
+    <GridStyles>
       {Array(numOfRows)
         .fill(1)
         .map((el, rowIndex) =>
@@ -49,6 +57,6 @@ export default function Grid({
             currGuess
           )
         )}
-    </div>
+    </GridStyles>
   );
 }

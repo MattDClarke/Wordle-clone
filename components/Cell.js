@@ -15,7 +15,9 @@ function determineLetterToDisplay(
 ) {
   if (gameState) {
     const { boardState } = gameState;
+
     if (currRowIndex === rowIndex) return currGuess[letterIndex];
+
     if (!boardState[rowIndex]) return '';
     // previously guessed words
     if (boardState[rowIndex]) {
@@ -37,11 +39,15 @@ export default function Cell({
     <div>
       <Box
         sx={{
-          display: 'inline-block',
-          flex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '2rem',
+          fontWeight: 900,
           width: '50px',
           height: '50px',
           border: '1px solid black',
+          margin: '0.1rem',
           backgroundColor:
             // color guessed words
             // check if evalutations for row exists
@@ -50,13 +56,15 @@ export default function Cell({
               : 'grey.200',
         }}
       >
-        {determineLetterToDisplay(
-          gameState,
-          rowIndex,
-          currRowIndex,
-          letterIndex,
-          currGuess
-        )}
+        <span>
+          {determineLetterToDisplay(
+            gameState,
+            rowIndex,
+            currRowIndex,
+            letterIndex,
+            currGuess
+          )}
+        </span>
       </Box>
     </div>
   );

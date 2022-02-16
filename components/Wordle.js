@@ -50,7 +50,7 @@ export function Wordle() {
       //         map through - for each letter - compare to solution to determine 'worngPlace', 'correct' or 'absent
       //           use the array of arrays for coloring Cells
       const boardLetters = prevGuesses
-        .map((str) => [...str.toLowerCase()])
+        .map((str) => [...str.toUpperCase()])
         .flat();
 
       // object showing state of each letter used in guesses
@@ -102,14 +102,14 @@ export function Wordle() {
     if (boardStateLen === 6) {
       return;
     }
-    const letter = key.toLowerCase();
-    if (letter === 'enter') {
+    const letter = key.toUpperCase();
+    if (letter === 'ENTER') {
       if (currGuess.length < 5) {
         setInfoMsg('Not enough letters');
         setCountMsgs(countInfoMsgs + 1);
         return;
       }
-      if (!wordList.includes(currGuess)) {
+      if (!wordList.includes(currGuess.toLowerCase())) {
         setInfoMsg('Not in word list');
         setCountMsgs(countInfoMsgs + 1);
         return;
@@ -147,9 +147,9 @@ export function Wordle() {
             setWinMsg('Good!');
         }
       }
-    } else if (letter === 'backspace') {
+    } else if (letter === 'BACKSPACE') {
       setCurrGuess(currGuess.slice(0, currGuess.length - 1));
-    } else if (/^[a-z]$/.test(letter)) {
+    } else if (/^[A-Z]$/.test(letter)) {
       if (currGuess.length < 5) {
         setCurrGuess(currGuess + letter);
       }
@@ -174,7 +174,7 @@ export function Wordle() {
     setGameState((prevState) => {
       const newGameState = {
         ...prevState,
-        solution: randomWord,
+        solution: randomWord.toUpperCase(),
       };
       return newGameState;
     });
@@ -192,7 +192,7 @@ export function Wordle() {
   });
 
   return (
-    <div>
+    <>
       <MsgSnackbar
         msgType="info"
         msg={infoMsg}
@@ -227,6 +227,6 @@ export function Wordle() {
         handleKey={handleKey}
         gameStatus={gameStatus}
       />
-    </div>
+    </>
   );
 }
