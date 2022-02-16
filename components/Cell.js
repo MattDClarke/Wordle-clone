@@ -46,14 +46,16 @@ export default function Cell({
           fontWeight: 900,
           width: '50px',
           height: '50px',
-          border: '1px solid black',
           margin: '0.1rem',
+          border: 2,
+          borderColor: 'action.disabledBackground',
+          color: 'text.primary',
           backgroundColor:
             // color guessed words
             // check if evalutations for row exists
             rowIndex < currRowIndex && evaluationGuesses[rowIndex]
               ? `${determineColor(evaluationGuesses[rowIndex][letterIndex])}`
-              : 'grey.200',
+              : 'background.paper',
         }}
       >
         <span>

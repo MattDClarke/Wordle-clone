@@ -1,11 +1,12 @@
 import { styled } from '@mui/material/styles';
 import Image from 'next/image';
-import Header from './Header';
+import Header from './Header/Header';
 
-const PageStyles = styled('div')(() => ({
+const PageStyles = styled('div')(({ theme }) => ({
   minHeight: '100vh',
   display: 'flex',
   flexDirection: 'column',
+  backgroundColor: theme.palette.background.paper,
 }));
 
 const InnerStyles = styled('main')(() => ({

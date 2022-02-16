@@ -16,7 +16,7 @@ export default function Keyboard({ evaluationLetters, handleKey, gameStatus }) {
       letterGuessState = evaluationLetters[letter];
     }
     if (letterGuessState === '' || letterGuessState === undefined)
-      return 'grey.200';
+      return 'action.selected';
     if (letterGuessState === 'absent') return 'grey.500';
     if (letterGuessState === 'wrongPlace') return 'warning.light';
     if (letterGuessState === 'correct') return 'success.light';
