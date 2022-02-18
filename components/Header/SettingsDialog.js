@@ -13,6 +13,7 @@ import { MaterialUISwitch } from './MaterialUISwitch';
 export default function DeleteConfirmDialog({ onClose, open }) {
   const currTheme = useTheme();
   const colorMode = useContext(ColorModeContext);
+
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle sx={{ textAlign: 'center' }}>Settings</DialogTitle>

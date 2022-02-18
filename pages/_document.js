@@ -2,6 +2,56 @@ import * as React from 'react';
 import Document, { Html, Head, Main, NextScript } from 'next/document';
 import createEmotionServer from '@emotion/server/create-instance';
 import createEmotionCache from '../components/createEmotionCache';
+import {
+  COLOR_MODE_KEY,
+  COLORS,
+  INITIAL_COLOR_MODE_CSS_PROP,
+} from '../lib/constants';
+
+// will be stringified, placeholders replaced, and immediately invoked when page loaded - will block HTML rendering
+function setColorsByTheme() {
+  // inital placeholder values - will be replaced
+  const colors = '🌈';
+  const colorModeKey = '🔑';
+  const colorModeCssProp = '⚡️';
+
+  // check users light / dark mode preferences
+  const mql = window.matchMedia('(prefers-color-scheme: dark)');
+  const prefersDarkFromMQ = mql.matches;
+  const persistedPreference = localStorage.getItem(colorModeKey);
+
+  let colorMode = 'light';
+
+  const hasUsedToggle = typeof persistedPreference === 'string';
+
+  if (hasUsedToggle) {
+    colorMode = persistedPreference;
+  } else {
+    colorMode = prefersDarkFromMQ ? 'dark' : 'light';
+  }
+
+  // access global styles
+  const root = document.documentElement;
+
+  root.style.setProperty(colorModeCssProp, colorMode);
+
+  Object.entries(colors).forEach(([name, colorByTheme]) => {
+    // create the needed CSS variables
+    const cssVarName = `--color-${name}`;
+
+    root.style.setProperty(cssVarName, colorByTheme[colorMode]);
+  });
+}
+
+const blockingSetInitialColorModeAndColors = () => {
+  const boundFn = String(setColorsByTheme)
+    .replace("'🌈'", JSON.stringify(COLORS))
+    .replace('🔑', COLOR_MODE_KEY)
+    .replace('⚡️', INITIAL_COLOR_MODE_CSS_PROP);
+
+  // Wrap it in an IIFE - prevent polluting global namespace - dnt need to store it globally.
+  return `(${boundFn})()`;
+};
 
 export default class MyDocument extends Document {
   render() {
@@ -17,6 +67,12 @@ export default class MyDocument extends Document {
           {this.props.emotionStyleTags}
         </Head>
         <body>
+          <script
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{
+              __html: blockingSetInitialColorModeAndColors(),
+            }}
+          />
           <Main />
           <NextScript />
         </body>

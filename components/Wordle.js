@@ -225,7 +225,7 @@ export function Wordle() {
       <Keyboard
         evaluationLetters={evaluationLetters}
         handleKey={handleKey}
-        gameStatus={gameStatus}
+        gameStatus={hasMounted ? gameStatus : 'active'}
       />
     </>
   );

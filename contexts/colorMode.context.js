@@ -1,15 +1,44 @@
-import { useMemo, createContext } from 'react';
+import { useMemo, createContext, useEffect, useState } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { useLocalStorage } from '../hooks/useLocalStorage';
+import {
+  COLORS,
+  COLOR_MODE_KEY,
+  INITIAL_COLOR_MODE_CSS_PROP,
+} from '../lib/constants';
 
-export const ColorModeContext = createContext({ toggleColorMode: () => {} });
+export const ColorModeContext = createContext();
 
 export function ColorModeProvider({ children }) {
-  const [mode, setMode] = useLocalStorage('colorMode', 'light');
+  const [mode, setMode] = useState('colorMode', undefined);
+
+  // set state to CSS root variable color mode so that u can update it with toggleColorMode
+  useEffect(() => {
+    const root = window.document.documentElement;
+    const initialColorValue = root.style.getPropertyValue(
+      INITIAL_COLOR_MODE_CSS_PROP
+    );
+    setMode(initialColorValue);
+  }, [setMode]);
+
   const colorMode = useMemo(
     () => ({
       toggleColorMode: () => {
-        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+        setMode((prevMode) => {
+          const root = window.document.documentElement;
+          const newVal = prevMode === 'light' ? 'dark' : 'light';
+          Object.entries(COLORS).forEach(([name, colorByTheme]) => {
+            const cssVarName = `--color-${name}`;
+
+            root.style.setProperty(cssVarName, colorByTheme[newVal]);
+            // none before React app mounted - so that no transition on page load
+            root.style.setProperty(
+              '--color-transition',
+              'background-color 0.4s ease'
+            );
+          });
+          window.localStorage.setItem(COLOR_MODE_KEY, newVal);
+          return newVal;
+        });
       },
     }),
     [setMode]
@@ -20,6 +49,7 @@ export function ColorModeProvider({ children }) {
       createTheme({
         palette: {
           // prevent messing with colorMode local storage in dev tools
+          // undefined initially (server render)
           mode: `${mode === 'light' || mode === 'dark' ? mode : 'light'}`,
         },
         typography: {
@@ -46,7 +76,9 @@ export function ColorModeProvider({ children }) {
           MuiCssBaseline: {
             styleOverrides: {
               '&::selection': {
-                background: `${mode === 'light' ? '#ff9800' : '#e65100'}`,
+                background: `${
+                  mode === 'light' || mode === undefined ? '#ff9800' : '#e65100'
+                }`,
               },
 
               body: {

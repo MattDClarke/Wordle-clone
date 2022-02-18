@@ -6,7 +6,8 @@ const PageStyles = styled('div')(({ theme }) => ({
   minHeight: '100vh',
   display: 'flex',
   flexDirection: 'column',
-  backgroundColor: theme.palette.background.paper,
+  // backgroundColor: theme.palette.background.paper,
+  backgroundColor: `var(--color-background)`,
 }));
 
 const InnerStyles = styled('main')(() => ({

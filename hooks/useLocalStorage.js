@@ -7,6 +7,7 @@ function getStorageValue(key, defaultValue) {
     const initial = saved !== null ? JSON.parse(saved) : defaultValue;
     return initial;
   }
+  return defaultValue;
 }
 
 // where hook is used - stringify when passing into state setter
