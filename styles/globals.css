@@ -1,3 +1,8 @@
+:root {
+  --color-success-high-contrast: #f5793a;
+  --color-alert-high-contrast: #85c0f9;
+}
+
 ::selection {
   background: var(--color-selection);
 }

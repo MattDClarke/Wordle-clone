@@ -1,5 +1,7 @@
 import { Box } from '@mui/material';
 import Button from '@mui/material/Button';
+import { useContext } from 'react';
+import { HighContrastModeContext } from '../contexts/HighContrastMode.context';
 
 const keyboardRow1 = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'];
 const keyboardRow2 = ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'];
@@ -7,6 +9,8 @@ const keyboardRow3 = ['ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'BACKSPACE'];
 const keyboardRows = [keyboardRow1, keyboardRow2, keyboardRow3];
 
 export default function Keyboard({ evaluationLetters, handleKey, gameStatus }) {
+  const { highContrastMode } = useContext(HighContrastModeContext);
+
   function determineButtonColor(letter) {
     let letterGuessState;
 
@@ -16,10 +20,20 @@ export default function Keyboard({ evaluationLetters, handleKey, gameStatus }) {
       letterGuessState = evaluationLetters[letter];
     }
     if (letterGuessState === '' || letterGuessState === undefined)
-      return 'action.selected';
+      return 'var(--color-gray-100)';
     if (letterGuessState === 'absent') return 'var(--color-gray-500)';
-    if (letterGuessState === 'wrongPlace') return 'var(--color-alert)';
-    if (letterGuessState === 'correct') return 'var(--color-success)';
+    if (letterGuessState === 'wrongPlace') {
+      if (highContrastMode === 'true') {
+        return 'var(--color-alert-high-contrast)';
+      }
+      return 'var(--color-alert)';
+    }
+    if (letterGuessState === 'correct') {
+      if (highContrastMode === 'true') {
+        return 'var(--color-success-high-contrast)';
+      }
+      return 'var(--color-success)';
+    }
   }
 
   function handleClick(e) {

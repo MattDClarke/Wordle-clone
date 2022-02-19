@@ -3,8 +3,9 @@ import Head from 'next/head';
 import { CssBaseline } from '@mui/material';
 import { CacheProvider } from '@emotion/react';
 import Page from '../components/Page';
-import { ColorModeProvider } from '../contexts/colorMode.context';
 import createEmotionCache from '../components/createEmotionCache';
+import { HighContrastModeProvider } from '../contexts/HighContrastMode.context';
+import { ColorModeProvider } from '../contexts/ColorMode.context';
 import '../styles/globals.css';
 
 // Client-side cache, shared for the whole session of the user in the browser.
@@ -17,12 +18,14 @@ function MyApp(props) {
       <Head>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
-      <ColorModeProvider>
-        <CssBaseline />
-        <Page>
-          <Component {...pageProps} />
-        </Page>
-      </ColorModeProvider>
+      <HighContrastModeProvider>
+        <ColorModeProvider>
+          <CssBaseline />
+          <Page>
+            <Component {...pageProps} />
+          </Page>
+        </ColorModeProvider>
+      </HighContrastModeProvider>
     </CacheProvider>
   );
 }

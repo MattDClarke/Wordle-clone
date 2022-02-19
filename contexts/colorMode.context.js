@@ -9,7 +9,7 @@ import {
 export const ColorModeContext = createContext();
 
 export function ColorModeProvider({ children }) {
-  const [mode, setMode] = useState('colorMode', undefined);
+  const [mode, setMode] = useState(COLOR_MODE_KEY, undefined);
 
   // set state to CSS root variable color mode so that u can update it with toggleColorMode
   useEffect(() => {

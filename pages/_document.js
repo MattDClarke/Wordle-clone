@@ -6,6 +6,8 @@ import {
   COLOR_MODE_KEY,
   COLORS,
   INITIAL_COLOR_MODE_CSS_PROP,
+  HIGH_CONTRAST_MODE_KEY,
+  INITIAL_HIGH_CONTRAST_MODE_CSS_PROP,
 } from '../lib/constants';
 
 // will be stringified, placeholders replaced, and immediately invoked when page loaded - will block HTML rendering
@@ -14,19 +16,25 @@ function setColorsByTheme() {
   const colors = '🌈';
   const colorModeKey = '🔑';
   const colorModeCssProp = '⚡️';
+  const highContrastModeKey = '📺';
+  const highContrastModeCssProp = '☀';
 
   // check users light / dark mode preferences
   const mql = window.matchMedia('(prefers-color-scheme: dark)');
   const prefersDarkFromMQ = mql.matches;
-  const persistedPreference = localStorage.getItem(colorModeKey);
+  const persistedColorModePreference = localStorage.getItem(colorModeKey);
 
   let colorMode = 'light';
 
-  const hasUsedToggle = typeof persistedPreference === 'string';
+  const hasUsedColorModeToggle =
+    typeof persistedColorModePreference === 'string';
 
-  if (hasUsedToggle) {
-    if (persistedPreference === 'light' || persistedPreference === 'dark') {
-      colorMode = persistedPreference;
+  if (hasUsedColorModeToggle) {
+    if (
+      persistedColorModePreference === 'light' ||
+      persistedColorModePreference === 'dark'
+    ) {
+      colorMode = persistedColorModePreference;
     } else {
       colorMode = 'light';
     }
@@ -34,10 +42,32 @@ function setColorsByTheme() {
     colorMode = prefersDarkFromMQ ? 'dark' : 'light';
   }
 
+  // high contrast mode preference
+  let highContrastMode = 'false';
+  const persistedHighContrastModePreference =
+    localStorage.getItem(highContrastModeKey);
+
+  const hasUsedHighContrastModeToggle =
+    typeof persistedHighContrastModePreference === 'string';
+
+  if (hasUsedHighContrastModeToggle) {
+    if (
+      persistedHighContrastModePreference === 'false' ||
+      persistedHighContrastModePreference === 'true'
+    ) {
+      highContrastMode = persistedHighContrastModePreference;
+    } else {
+      highContrastMode = 'false';
+    }
+  } else {
+    highContrastMode = 'false';
+  }
+
   // access global styles
   const root = document.documentElement;
 
   root.style.setProperty(colorModeCssProp, colorMode);
+  root.style.setProperty(highContrastModeCssProp, highContrastMode);
 
   Object.entries(colors).forEach(([name, colorByTheme]) => {
     // create the needed CSS variables
@@ -51,7 +81,9 @@ const blockingSetInitialColorModeAndColors = () => {
   const boundFn = String(setColorsByTheme)
     .replace("'🌈'", JSON.stringify(COLORS))
     .replace('🔑', COLOR_MODE_KEY)
-    .replace('⚡️', INITIAL_COLOR_MODE_CSS_PROP);
+    .replace('⚡️', INITIAL_COLOR_MODE_CSS_PROP)
+    .replace('📺', HIGH_CONTRAST_MODE_KEY)
+    .replace('☀', INITIAL_HIGH_CONTRAST_MODE_CSS_PROP);
 
   // Wrap it in an IIFE - prevent polluting global namespace - dnt need to store it globally.
   return `(${boundFn})()`;

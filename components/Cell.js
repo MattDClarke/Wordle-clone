@@ -1,9 +1,21 @@
 import { Box } from '@mui/material';
+import { useContext } from 'react';
+import { HighContrastModeContext } from '../contexts/HighContrastMode.context';
 
-function determineColor(evaluation) {
+function determineColor(evaluation, highContrastMode) {
   if (evaluation === 'absent') return 'var(--color-gray-500)';
-  if (evaluation === 'wrongPlace') return 'var(--color-alert)';
-  if (evaluation === 'correct') return 'var(--color-success)';
+  if (evaluation === 'wrongPlace') {
+    if (highContrastMode === 'true') {
+      return 'var(--color-alert-high-contrast)';
+    }
+    return 'var(--color-alert)';
+  }
+  if (evaluation === 'correct') {
+    if (highContrastMode === 'true') {
+      return 'var(--color-success-high-contrast)';
+    }
+    return 'var(--color-success)';
+  }
 }
 
 function determineLetterToDisplay(
@@ -35,6 +47,7 @@ export default function Cell({
   currRowIndex,
   currGuess,
 }) {
+  const { highContrastMode } = useContext(HighContrastModeContext);
   return (
     <div>
       <Box
@@ -54,7 +67,10 @@ export default function Cell({
             // color guessed words
             // check if evalutations for row exists
             rowIndex < currRowIndex && evaluationGuesses[rowIndex]
-              ? `${determineColor(evaluationGuesses[rowIndex][letterIndex])}`
+              ? `${determineColor(
+                  evaluationGuesses[rowIndex][letterIndex],
+                  highContrastMode
+                )}`
               : 'var(--color-background)',
         }}
       >
