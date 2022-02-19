@@ -25,7 +25,11 @@ function setColorsByTheme() {
   const hasUsedToggle = typeof persistedPreference === 'string';
 
   if (hasUsedToggle) {
-    colorMode = persistedPreference;
+    if (persistedPreference === 'light' || persistedPreference === 'dark') {
+      colorMode = persistedPreference;
+    } else {
+      colorMode = 'light';
+    }
   } else {
     colorMode = prefersDarkFromMQ ? 'dark' : 'light';
   }
@@ -53,6 +57,24 @@ const blockingSetInitialColorModeAndColors = () => {
   return `(${boundFn})()`;
 };
 
+const FallbackStyles = function () {
+  // Create a string holding each CSS variable:
+  /*
+    `--color-text: black;
+    --color-background: white;`
+  */
+
+  const cssVariableString = Object.entries(COLORS).reduce(
+    (acc, [name, colorByTheme]) =>
+      `${acc}\n--color-${name}: ${colorByTheme.light};`,
+    ''
+  );
+
+  const wrappedInSelector = `html { ${cssVariableString} }`;
+
+  return <style>{wrappedInSelector}</style>;
+};
+
 export default class MyDocument extends Document {
   render() {
     return (
@@ -65,6 +87,9 @@ export default class MyDocument extends Document {
           />
           {/* Inject MUI styles first to match with the prepend: true configuration. */}
           {this.props.emotionStyleTags}
+          <noscript>
+            <FallbackStyles key="fallback-styles" />
+          </noscript>
         </Head>
         <body>
           <script

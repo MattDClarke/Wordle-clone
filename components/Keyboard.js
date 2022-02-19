@@ -17,9 +17,9 @@ export default function Keyboard({ evaluationLetters, handleKey, gameStatus }) {
     }
     if (letterGuessState === '' || letterGuessState === undefined)
       return 'action.selected';
-    if (letterGuessState === 'absent') return 'grey.500';
-    if (letterGuessState === 'wrongPlace') return 'warning.light';
-    if (letterGuessState === 'correct') return 'success.light';
+    if (letterGuessState === 'absent') return 'var(--color-gray-500)';
+    if (letterGuessState === 'wrongPlace') return 'var(--color-alert)';
+    if (letterGuessState === 'correct') return 'var(--color-success)';
   }
 
   function handleClick(e) {
@@ -43,7 +43,7 @@ export default function Keyboard({ evaluationLetters, handleKey, gameStatus }) {
                 disabled={gameStatus !== 'active'}
                 onClick={handleClick}
                 sx={{
-                  color: 'text.primary',
+                  color: 'var(--color-text)',
                   backgroundColor: buttonColor,
                   '&.MuiButtonBase-root:hover': {
                     bgcolor: buttonColor,

@@ -28,13 +28,7 @@ export function ColorModeProvider({ children }) {
           const newVal = prevMode === 'light' ? 'dark' : 'light';
           Object.entries(COLORS).forEach(([name, colorByTheme]) => {
             const cssVarName = `--color-${name}`;
-
             root.style.setProperty(cssVarName, colorByTheme[newVal]);
-            // none before React app mounted - so that no transition on page load
-            root.style.setProperty(
-              '--color-transition',
-              'background-color 0.4s ease'
-            );
           });
           window.localStorage.setItem(COLOR_MODE_KEY, newVal);
           return newVal;
@@ -70,42 +64,6 @@ export function ColorModeProvider({ children }) {
             md: 900,
             lg: 1200,
             xl: 1536,
-          },
-        },
-        components: {
-          MuiCssBaseline: {
-            styleOverrides: {
-              '&::selection': {
-                background: `${
-                  mode === 'light' || mode === undefined ? '#ff9800' : '#e65100'
-                }`,
-              },
-
-              body: {
-                scrollbarColor: '#6b6b6b #2b2b2b',
-                '&::-webkit-scrollbar, & *::-webkit-scrollbar': {
-                  backgroundColor: `${
-                    mode === 'light' ? '#bdbdbd' : '#2b2b2b'
-                  }`,
-                },
-                '&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb': {
-                  borderRadius: 8,
-                  backgroundColor: `${
-                    mode === 'light' ? '#1976d2' : '#9c27b0'
-                  }`,
-                  minHeight: 24,
-                  border: `3px solid ${
-                    mode === 'light' ? '#bdbdbd' : '#2b2b2b'
-                  }`,
-                },
-                '&::-webkit-scrollbar-thumb:hover, & *::-webkit-scrollbar-thumb:hover':
-                  {
-                    backgroundColor: `${
-                      mode === 'light' ? '#42a5f5' : '#ba68c8'
-                    }`,
-                  },
-              },
-            },
           },
         },
       }),

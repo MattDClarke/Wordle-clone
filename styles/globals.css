@@ -1,0 +1,17 @@
+::selection {
+  background: var(--color-selection);
+}
+
+body::-webkit-scrollbar {
+  width: auto;
+}
+
+
+body::-webkit-scrollbar-track {
+  background: var(--color-gray-300);
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: var(--color-secondary);
+  border-radius: 6px;
+}

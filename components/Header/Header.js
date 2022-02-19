@@ -7,18 +7,18 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import { Typography } from '@mui/material';
 import SettingsDialog from './SettingsDialog';
 
-const HeaderStyles = styled('header')(({ theme }) => ({
+const HeaderStyles = styled('header')(() => ({
   display: 'flex',
   padding: '0.5rem 1rem',
   alignItems: 'center',
-  borderBottom: '1px solid #9a9e87',
+  borderBottom: '1px solid var(--color-gray-500)',
   '& h1': {
     flex: 1,
     textAlign: 'center',
     margin: 0,
-    color: theme.palette.text.primary,
+    color: 'var(--color-text)',
   },
-  backgroundColor: theme.palette.background.paper,
+  backgroundColor: 'var(--color-background)',
 }));
 
 export default function Header() {

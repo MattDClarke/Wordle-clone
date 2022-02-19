@@ -1,9 +1,9 @@
 import { Box } from '@mui/material';
 
 function determineColor(evaluation) {
-  if (evaluation === 'absent') return 'grey.500';
-  if (evaluation === 'wrongPlace') return 'warning.light';
-  if (evaluation === 'correct') return 'success.light';
+  if (evaluation === 'absent') return 'var(--color-gray-500)';
+  if (evaluation === 'wrongPlace') return 'var(--color-alert)';
+  if (evaluation === 'correct') return 'var(--color-success)';
 }
 
 function determineLetterToDisplay(
@@ -48,14 +48,14 @@ export default function Cell({
           height: '50px',
           margin: '0.1rem',
           border: 2,
-          borderColor: 'action.disabledBackground',
-          color: 'text.primary',
+          borderColor: 'var(--color-gray-500)',
+          color: 'var(--color-text)',
           backgroundColor:
             // color guessed words
             // check if evalutations for row exists
             rowIndex < currRowIndex && evaluationGuesses[rowIndex]
               ? `${determineColor(evaluationGuesses[rowIndex][letterIndex])}`
-              : 'background.paper',
+              : 'var(--color-background)',
         }}
       >
         <span>
