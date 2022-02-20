@@ -8,6 +8,8 @@ import {
   INITIAL_COLOR_MODE_CSS_PROP,
   HIGH_CONTRAST_MODE_KEY,
   INITIAL_HIGH_CONTRAST_MODE_CSS_PROP,
+  HARD_MODE_KEY,
+  INITIAL_HARD_MODE_CSS_PROP,
 } from '../lib/constants';
 
 // will be stringified, placeholders replaced, and immediately invoked when page loaded - will block HTML rendering
@@ -18,6 +20,8 @@ function setColorsByTheme() {
   const colorModeCssProp = '⚡️';
   const highContrastModeKey = '📺';
   const highContrastModeCssProp = '☀';
+  const hardModeKey = '🏍';
+  const hardModeCssProp = '🏎';
 
   // check users light / dark mode preferences
   const mql = window.matchMedia('(prefers-color-scheme: dark)');
@@ -63,11 +67,31 @@ function setColorsByTheme() {
     highContrastMode = 'false';
   }
 
+  // hard mode preference
+  let hardMode = 'false';
+  const persistedHardModePreference = localStorage.getItem(hardModeKey);
+
+  const hasUsedHardModeToggle = typeof persistedHardModePreference === 'string';
+
+  if (hasUsedHardModeToggle) {
+    if (
+      persistedHardModePreference === 'false' ||
+      persistedHardModePreference === 'true'
+    ) {
+      hardMode = persistedHardModePreference;
+    } else {
+      hardMode = 'false';
+    }
+  } else {
+    hardMode = 'false';
+  }
+
   // access global styles
   const root = document.documentElement;
 
   root.style.setProperty(colorModeCssProp, colorMode);
   root.style.setProperty(highContrastModeCssProp, highContrastMode);
+  root.style.setProperty(hardModeCssProp, hardMode);
 
   Object.entries(colors).forEach(([name, colorByTheme]) => {
     // create the needed CSS variables
@@ -83,7 +107,9 @@ const blockingSetInitialColorModeAndColors = () => {
     .replace('🔑', COLOR_MODE_KEY)
     .replace('⚡️', INITIAL_COLOR_MODE_CSS_PROP)
     .replace('📺', HIGH_CONTRAST_MODE_KEY)
-    .replace('☀', INITIAL_HIGH_CONTRAST_MODE_CSS_PROP);
+    .replace('☀', INITIAL_HIGH_CONTRAST_MODE_CSS_PROP)
+    .replace('🏍', HARD_MODE_KEY)
+    .replace('🏎', INITIAL_HARD_MODE_CSS_PROP);
 
   // Wrap it in an IIFE - prevent polluting global namespace - dnt need to store it globally.
   return `(${boundFn})()`;

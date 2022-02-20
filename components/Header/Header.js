@@ -21,7 +21,7 @@ const HeaderStyles = styled('header')(() => ({
   backgroundColor: 'var(--color-background)',
 }));
 
-export default function Header() {
+export default function Header({ gameState, setInfoMsg, setCountInfoMsgs }) {
   const [openSettings, setOpensettings] = useState(false);
 
   const handleClickOpenSettings = () => {
@@ -47,7 +47,13 @@ export default function Header() {
           <SettingsIcon />
         </IconButton>
       </HeaderStyles>
-      <SettingsDialog open={openSettings} onClose={handleCloseSettings} />
+      <SettingsDialog
+        open={openSettings}
+        onClose={handleCloseSettings}
+        gameState={gameState}
+        setInfoMsg={setInfoMsg}
+        setCountInfoMsgs={setCountInfoMsgs}
+      />
     </>
   );
 }

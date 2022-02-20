@@ -2,9 +2,9 @@ import PropTypes from 'prop-types';
 import Head from 'next/head';
 import { CssBaseline } from '@mui/material';
 import { CacheProvider } from '@emotion/react';
-import Page from '../components/Page';
 import createEmotionCache from '../components/createEmotionCache';
 import { HighContrastModeProvider } from '../contexts/HighContrastMode.context';
+import { HardModeProvider } from '../contexts/HardMode.context';
 import { ColorModeProvider } from '../contexts/ColorMode.context';
 import '../styles/globals.css';
 
@@ -18,14 +18,14 @@ function MyApp(props) {
       <Head>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
-      <HighContrastModeProvider>
-        <ColorModeProvider>
-          <CssBaseline />
-          <Page>
+      <HardModeProvider>
+        <HighContrastModeProvider>
+          <ColorModeProvider>
+            <CssBaseline />
             <Component {...pageProps} />
-          </Page>
-        </ColorModeProvider>
-      </HighContrastModeProvider>
+          </ColorModeProvider>
+        </HighContrastModeProvider>
+      </HardModeProvider>
     </CacheProvider>
   );
 }

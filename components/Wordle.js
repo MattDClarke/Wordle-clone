@@ -1,11 +1,11 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useContext } from 'react';
 import { gameStateInitial } from '../lib/initialGameState';
 import { useHasMounted } from '../hooks/useHasMounted';
-import { useLocalStorage } from '../hooks/useLocalStorage';
 import Grid from './Grid';
 import Keyboard from './Keyboard';
 import MsgSnackbar from './MsgSnackbar';
 import { wordList } from '../lib/wordList';
+import { HardModeContext } from '../contexts/HardMode.context';
 
 const wordLength = 5;
 const numOfRows = 6;
@@ -14,17 +14,55 @@ let gameStatus = '';
 const evaluationLetters = {};
 let evaluationGuesses = [];
 
-export function Wordle() {
+export function Wordle({
+  gameState,
+  setGameState,
+  infoMsg,
+  setInfoMsg,
+  countInfoMsgs,
+  setCountInfoMsgs,
+}) {
+  const { hardMode } = useContext(HardModeContext);
   const hasMounted = useHasMounted();
-  const [gameState, setGameState] = useLocalStorage(
-    'gameState',
-    gameStateInitial
-  );
+  // const [gameState, setGameState] = useLocalStorage(
+  //   'gameState',
+  //   gameStateInitial
+  // );
   const [currGuess, setCurrGuess] = useState('');
-  const [infoMsg, setInfoMsg] = useState('');
   const [loseMsg, setLoseMsg] = useState('');
   const [winMsg, setWinMsg] = useState('');
-  const [countInfoMsgs, setCountMsgs] = useState(0);
+
+  function getHardModeMsg(index, letter) {
+    switch (index) {
+      case 0:
+        setInfoMsg(`First letter must be ${letter}`);
+        break;
+      case 1:
+        setInfoMsg(`Second letter must be ${letter}`);
+        break;
+      case 2:
+        setInfoMsg(`Third letter must be ${letter}`);
+        break;
+      case 3:
+        setInfoMsg(`Fourth letter must be ${letter}`);
+        break;
+      default:
+        setInfoMsg(`Fifth letter must be ${letter}`);
+    }
+  }
+
+  // input - arrays
+  function determineGuessEvaluation(guess, solution) {
+    return guess.map((letter, i) => {
+      if (solution.includes(letter)) {
+        if (letter === solution[i]) {
+          return 'correct';
+        }
+        return 'wrongPlace';
+      }
+      return 'absent';
+    });
+  }
 
   const determineEvaluationsAndCurrRowIndex = useCallback(
     (boardState) => {
@@ -35,15 +73,7 @@ export function Wordle() {
       const prevGuesses = boardState.filter((guess) => guess !== '');
 
       evaluationGuesses = prevGuesses.map((guess) =>
-        [...guess].map((letter, i) => {
-          if (solution.includes(letter)) {
-            if (letter === solution[i]) {
-              return 'correct';
-            }
-            return 'wrongPlace';
-          }
-          return 'absent';
-        })
+        determineGuessEvaluation([...guess], solution)
       );
       //  for each prevGuess
       //      make guess (string) an array using spread operator
@@ -106,14 +136,37 @@ export function Wordle() {
     if (letter === 'ENTER') {
       if (currGuess.length < 5) {
         setInfoMsg('Not enough letters');
-        setCountMsgs(countInfoMsgs + 1);
+        setCountInfoMsgs(countInfoMsgs + 1);
         return;
       }
+
       if (!wordList.includes(currGuess.toLowerCase())) {
         setInfoMsg('Not in word list');
-        setCountMsgs(countInfoMsgs + 1);
+        setCountInfoMsgs(countInfoMsgs + 1);
         return;
       }
+
+      // Hardmode check
+      if (hardMode === 'true' && boardState.length > 0) {
+        const lastGuessEvaluation =
+          evaluationGuesses[evaluationGuesses.length - 1];
+        const currGuessEvaluation = determineGuessEvaluation(
+          [...currGuess],
+          [...solution]
+        );
+
+        for (const [i, evaluation] of lastGuessEvaluation.entries()) {
+          if (
+            evaluation === 'correct' &&
+            currGuessEvaluation[i] !== 'correct'
+          ) {
+            getHardModeMsg(i, solution[i]);
+            setCountInfoMsgs(countInfoMsgs + 1);
+            return;
+          }
+        }
+      }
+
       const newBoardState = [...boardState, currGuess];
       setGameState((prevState) => {
         const newGameState = {

@@ -9,17 +9,43 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { ColorModeContext } from '../../contexts/ColorMode.context';
 import { HighContrastModeContext } from '../../contexts/HighContrastMode.context';
+import { HardModeContext } from '../../contexts/HardMode.context';
 import { MaterialUISwitch } from './MaterialUISwitch';
 import { IOSSwitch } from './IOSSwitch';
 
-export default function DeleteConfirmDialog({ onClose, open }) {
+export default function SettingsDialog({
+  onClose,
+  open,
+  gameState,
+  setInfoMsg,
+  setCountInfoMsgs,
+}) {
   const currTheme = useTheme();
   const colorMode = useContext(ColorModeContext);
   const { highContrastMode, setHighContrastMode } = useContext(
     HighContrastModeContext
   );
+  const { hardMode, setHardMode } = useContext(HardModeContext);
 
-  function handleToggle(e) {
+  function handleHardModeToggle(e) {
+    // prevent toggle on when boardState !== [] (game started)
+    const { boardState, solution } = gameState;
+    const isGameOver = boardState.includes(solution) || boardState.length === 6;
+    if (
+      e.target.checked &&
+      boardState.length !== 0 &&
+      // allow toggle after game over
+      !isGameOver
+    ) {
+      setInfoMsg('Hard mode can only be enabled at the start of a round');
+      setCountInfoMsgs((prevCount) => prevCount + 1);
+      setHardMode('false');
+      return;
+    }
+    setHardMode(e.target.checked ? 'true' : 'false');
+  }
+
+  function handleHighContrastModeToggle(e) {
     setHighContrastMode(e.target.checked ? 'true' : 'false');
   }
 
@@ -27,6 +53,21 @@ export default function DeleteConfirmDialog({ onClose, open }) {
     <Dialog open={open} onClose={onClose}>
       <DialogTitle sx={{ textAlign: 'center' }}>Settings</DialogTitle>
       <DialogContent>
+        <Box>
+          Hard Mode Any revealed hints must be used in subsequent guesses
+          <IOSSwitch
+            sx={{
+              my: {
+                xs: 2,
+                md: 0,
+              },
+            }}
+            checked={hardMode === 'true'}
+            // disabled={hardMode === 'false' && gameState.boardState.length !== 0}
+            onChange={handleHardModeToggle}
+            inputProps={{ 'aria-label': 'Hard mode toggle' }}
+          />
+        </Box>
         <Box>
           Dark Mode{' '}
           <MaterialUISwitch
@@ -38,11 +79,11 @@ export default function DeleteConfirmDialog({ onClose, open }) {
             }}
             checked={currTheme.palette.mode === 'dark'}
             onChange={colorMode.toggleColorMode}
-            inputProps={{ 'aria-label': 'dark mode - light mode toggle' }}
+            inputProps={{ 'aria-label': 'Dark mode - light mode toggle' }}
           />
         </Box>
         <Box>
-          High Contrast Mode{' '}
+          High Contrast Mode. For improved color vision
           <IOSSwitch
             sx={{
               my: {
@@ -51,7 +92,7 @@ export default function DeleteConfirmDialog({ onClose, open }) {
               },
             }}
             checked={highContrastMode === 'true'}
-            onChange={handleToggle}
+            onChange={handleHighContrastModeToggle}
             inputProps={{ 'aria-label': 'High contrast mode toggle' }}
           />
         </Box>
