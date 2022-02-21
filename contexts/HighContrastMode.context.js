@@ -18,11 +18,11 @@ export const HighContrastModeProvider = function ({ children }) {
     // Because colors matter so much for the initial page view, we're
     // doing a lot of the work in gatsby-ssr. That way it can happen before
     // the React component tree mounts.
-    const initialColorValue = root.style.getPropertyValue(
+    const initialHighContrastValue = root.style.getPropertyValue(
       INITIAL_HIGH_CONTRAST_MODE_CSS_PROP
     );
 
-    rawSetHighContrastMode(initialColorValue);
+    rawSetHighContrastMode(initialHighContrastValue);
   }, []);
 
   const contextValue = useMemo(() => {

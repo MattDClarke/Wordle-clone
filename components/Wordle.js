@@ -150,17 +150,26 @@ export function Wordle({
       if (hardMode === 'true' && boardState.length > 0) {
         const lastGuessEvaluation =
           evaluationGuesses[evaluationGuesses.length - 1];
-        const currGuessEvaluation = determineGuessEvaluation(
-          [...currGuess],
-          [...solution]
-        );
+        const currGuessArr = [...currGuess];
+        const currGuessEvaluation = determineGuessEvaluation(currGuessArr, [
+          ...solution,
+        ]);
 
+        const lastGuessArr = boardState[boardState.length - 1];
         for (const [i, evaluation] of lastGuessEvaluation.entries()) {
           if (
             evaluation === 'correct' &&
             currGuessEvaluation[i] !== 'correct'
           ) {
             getHardModeMsg(i, solution[i]);
+            setCountInfoMsgs(countInfoMsgs + 1);
+            return;
+          }
+          if (
+            evaluation === 'wrongPlace' &&
+            !currGuessArr.includes(lastGuessArr[i])
+          ) {
+            setInfoMsg(`Guess must contain ${lastGuessArr[i]}`);
             setCountInfoMsgs(countInfoMsgs + 1);
             return;
           }

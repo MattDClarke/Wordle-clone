@@ -12,14 +12,11 @@ export const HardModeProvider = function ({ children }) {
   useEffect(() => {
     const root = window.document.documentElement;
 
-    // Because colors matter so much for the initial page view, we're
-    // doing a lot of the work in gatsby-ssr. That way it can happen before
-    // the React component tree mounts.
-    const initialColorValue = root.style.getPropertyValue(
+    const initialHardModeValue = root.style.getPropertyValue(
       INITIAL_HARD_MODE_CSS_PROP
     );
 
-    rawSetHardMode(initialColorValue);
+    rawSetHardMode(initialHardModeValue);
   }, []);
 
   const contextValue = useMemo(() => {
