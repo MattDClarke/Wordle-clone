@@ -5,6 +5,8 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { Typography } from '@mui/material';
+import HowToPlayDialog from './HowToPlayDialog';
+import StatisticsDialog from './StatisticsDialog';
 import SettingsDialog from './SettingsDialog';
 
 const HeaderStyles = styled('header')(() => ({
@@ -22,31 +24,60 @@ const HeaderStyles = styled('header')(() => ({
 }));
 
 export default function Header({ gameState, setInfoMsg, setCountInfoMsgs }) {
-  const [openSettings, setOpensettings] = useState(false);
+  const [openHowToPlay, setOpenHowToPlay] = useState(false);
+  const [openStatistics, setOpenStatistics] = useState(false);
+  const [openSettings, setOpenSettings] = useState(false);
+
+  const handleClickOpenHowToPlay = () => {
+    setOpenHowToPlay(true);
+  };
+
+  const handleClickOpenStatistics = () => {
+    setOpenStatistics(true);
+  };
 
   const handleClickOpenSettings = () => {
-    setOpensettings(true);
+    setOpenSettings(true);
+  };
+
+  const handleCloseHowToPlay = () => {
+    setOpenHowToPlay(false);
+  };
+
+  const handleCloseStatistics = () => {
+    setOpenStatistics(false);
   };
 
   const handleCloseSettings = () => {
-    setOpensettings(false);
+    setOpenSettings(false);
   };
+
   return (
     <>
       <HeaderStyles>
         <div style={{ width: '96px' }}>
-          <IconButton aria-label="How to Play">
+          <IconButton
+            aria-label="How to Play"
+            onClick={handleClickOpenHowToPlay}
+          >
             <HelpOutlineIcon />
           </IconButton>
         </div>
         <Typography variant="h1">Wordle</Typography>
-        <IconButton aria-label="Statistics">
+        <IconButton aria-label="Statistics" onClick={handleClickOpenStatistics}>
           <BarChartIcon />
         </IconButton>
         <IconButton aria-label="Settings" onClick={handleClickOpenSettings}>
           <SettingsIcon />
         </IconButton>
       </HeaderStyles>
+
+      <HowToPlayDialog open={openHowToPlay} onClose={handleCloseHowToPlay} />
+      <StatisticsDialog
+        open={openStatistics}
+        onClose={handleCloseStatistics}
+        gameState={gameState}
+      />
       <SettingsDialog
         open={openSettings}
         onClose={handleCloseSettings}
