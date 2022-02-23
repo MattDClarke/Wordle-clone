@@ -1,6 +1,8 @@
+import { useContext } from 'react';
 import { Box } from '@mui/material';
 import Button from '@mui/material/Button';
-import { useContext } from 'react';
+import { motion } from 'framer-motion';
+
 import { HighContrastModeContext } from '../contexts/HighContrastMode.context';
 
 const keyboardRow1 = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'];
@@ -46,29 +48,35 @@ export default function Keyboard({ evaluationLetters, handleKey, gameStatus }) {
   return (
     <Box sx={{ textAlign: 'center' }}>
       {keyboardRows.map((keyboardRow, i) => (
-        <div key={i}>
+        <div key={i} style={{ display: 'flex' }}>
           {keyboardRow.map((letter) => {
             const buttonColor = determineButtonColor(letter);
             return (
-              <Button
-                variant="contained"
+              <motion.div
                 key={letter}
-                value={letter}
-                disabled={gameStatus !== 'active'}
-                onClick={handleClick}
-                sx={{
-                  color: 'var(--color-text)',
-                  backgroundColor: buttonColor,
-                  '&.MuiButtonBase-root:hover': {
-                    bgcolor: buttonColor,
-                  },
-                  '&.Mui-disabled': {
-                    bgcolor: buttonColor,
-                  },
-                }}
+                whileHover={{ scale: 1.1 }}
+                whileFocus={{ scale: 1.1 }}
+                transition={{ type: 'spring', stiffness: 500 }}
               >
-                {letter}
-              </Button>
+                <Button
+                  variant="contained"
+                  value={letter}
+                  disabled={gameStatus !== 'active'}
+                  onClick={handleClick}
+                  sx={{
+                    color: 'var(--color-text)',
+                    backgroundColor: buttonColor,
+                    '&.MuiButtonBase-root:hover': {
+                      bgcolor: buttonColor,
+                    },
+                    '&.Mui-disabled': {
+                      bgcolor: buttonColor,
+                    },
+                  }}
+                >
+                  {letter}
+                </Button>
+              </motion.div>
             );
           })}
         </div>

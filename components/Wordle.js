@@ -24,30 +24,31 @@ export function Wordle({
 }) {
   const { hardMode } = useContext(HardModeContext);
   const hasMounted = useHasMounted();
-  // const [gameState, setGameState] = useLocalStorage(
-  //   'gameState',
-  //   gameStateInitial
-  // );
   const [currGuess, setCurrGuess] = useState('');
   const [loseMsg, setLoseMsg] = useState('');
   const [winMsg, setWinMsg] = useState('');
 
+  function toggleSetInfoMsg(msg) {
+    setInfoMsg(msg);
+    setTimeout(() => setInfoMsg(''), 1000);
+  }
+
   function getHardModeMsg(index, letter) {
     switch (index) {
       case 0:
-        setInfoMsg(`First letter must be ${letter}`);
+        toggleSetInfoMsg(`First letter must be ${letter}`);
         break;
       case 1:
-        setInfoMsg(`Second letter must be ${letter}`);
+        toggleSetInfoMsg(`Second letter must be ${letter}`);
         break;
       case 2:
-        setInfoMsg(`Third letter must be ${letter}`);
+        toggleSetInfoMsg(`Third letter must be ${letter}`);
         break;
       case 3:
-        setInfoMsg(`Fourth letter must be ${letter}`);
+        toggleSetInfoMsg(`Fourth letter must be ${letter}`);
         break;
       default:
-        setInfoMsg(`Fifth letter must be ${letter}`);
+        toggleSetInfoMsg(`Fifth letter must be ${letter}`);
     }
   }
 
@@ -141,7 +142,7 @@ export function Wordle({
       }
 
       if (!wordList.includes(currGuess.toLowerCase())) {
-        setInfoMsg('Not in word list');
+        toggleSetInfoMsg('Not in word list');
         setCountInfoMsgs(countInfoMsgs + 1);
         return;
       }
@@ -169,7 +170,7 @@ export function Wordle({
             evaluation === 'wrongPlace' &&
             !currGuessArr.includes(lastGuessArr[i])
           ) {
-            setInfoMsg(`Guess must contain ${lastGuessArr[i]}`);
+            toggleSetInfoMsg(`Guess must contain ${lastGuessArr[i]}`);
             setCountInfoMsgs(countInfoMsgs + 1);
             return;
           }
@@ -283,6 +284,7 @@ export function Wordle({
         numOfRows={numOfRows}
         currRowIndex={currRowIndex}
         currGuess={currGuess}
+        infoMsg={infoMsg}
       />
       <Keyboard
         evaluationLetters={evaluationLetters}
