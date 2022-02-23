@@ -1,5 +1,6 @@
 import { styled } from '@mui/material/styles';
 import { motion } from 'framer-motion';
+import { v4 as uuidv4 } from 'uuid';
 import Cell from './Cell';
 
 const GridStyles = styled('div')(() => ({
@@ -15,18 +16,17 @@ const rowVariants = {
     opacity: 1,
     transition: {
       duration: 1,
-      delayChildren: 0.3,
+      delayChildren: 0.2,
       staggerChildren: 0.2,
     },
   },
 };
 
 const cellVariants = {
-  initial: { y: -40, opacity: 0.5, rotateX: 90 },
+  initial: { y: 0, rotateY: 90 },
   animate: {
     y: 0,
-    rotateX: 0,
-    opacity: 1,
+    rotateY: 0,
     transition: {
       ease: [0.6, 0.01, -0.05, 0.95],
       duration: 1,
@@ -56,8 +56,23 @@ function generateRow(
   currGuess,
   infoMsg
 ) {
+  if (rowIndex === currRowIndex) {
+    console.log(
+      { rowIndex },
+      { currGuess },
+      { evaluationGuesses },
+      { gameState }
+    );
+  }
   return (
-    <div key={`${gameState.boardState[rowIndex] ?? 'boardState'} ${rowIndex}`}>
+    // <div key={`${gameState.boardState[rowIndex] ?? 'boardState'} ${rowIndex}`}>
+    <div
+      key={
+        rowIndex === currRowIndex && rowIndex !== gameState.boardState.length
+          ? uuidv4()
+          : `${gameState.boardState[rowIndex] ?? 'boardState'} ${rowIndex}`
+      }
+    >
       <motion.div
         variants={rowVariants}
         initial="initial"
@@ -88,6 +103,8 @@ function generateRow(
                   variants={itemVariants}
                   animate={
                     infoMsg !== 'Not enough letters' &&
+                    infoMsg !==
+                      'Hard mode can only be enabled at the start of a round' &&
                     infoMsg !== '' &&
                     rowIndex === currRowIndex
                       ? 'animate'
