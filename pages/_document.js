@@ -122,13 +122,13 @@ const FallbackStyles = function () {
     --color-background: white;`
   */
 
-  const cssVariableString = Object.entries(COLORS).reduce(
+  const cssVariablesString = Object.entries(COLORS).reduce(
     (acc, [name, colorByTheme]) =>
       `${acc}\n--color-${name}: ${colorByTheme.light};`,
     ''
   );
 
-  const wrappedInSelector = `html { ${cssVariableString} }`;
+  const wrappedInSelector = `html { ${cssVariablesString} }`;
 
   return <style>{wrappedInSelector}</style>;
 };

@@ -67,8 +67,6 @@ export function Wordle({
 
   const determineEvaluationsAndCurrRowIndex = useCallback(
     (boardState) => {
-      // setCurrGuess('');
-
       const solution = [...gameState.solution];
       // determine state of each letter for keyboard: 'absent, 'wrongPlace' or 'correct'
       const prevGuesses = boardState.filter((guess) => guess !== '');
@@ -78,7 +76,7 @@ export function Wordle({
       );
       //  for each prevGuess
       //      make guess (string) an array using spread operator
-      //         map through - for each letter - compare to solution to determine 'worngPlace', 'correct' or 'absent
+      //         map through - for each letter - compare to solution to determine 'wrongPlace', 'correct' or 'absent
       //           use the array of arrays for coloring Cells
       const boardLetters = prevGuesses
         .map((str) => [...str.toUpperCase()])

@@ -63,7 +63,7 @@ export default function Header({ gameState, setInfoMsg, setCountInfoMsgs }) {
             <HelpOutlineIcon />
           </IconButton>
         </div>
-        <Typography variant="h1">Wordle</Typography>
+        <Typography variant="h1">Wordle Clone</Typography>
         <IconButton aria-label="Statistics" onClick={handleClickOpenStatistics}>
           <BarChartIcon />
         </IconButton>

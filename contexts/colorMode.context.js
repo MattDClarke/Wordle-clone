@@ -1,5 +1,6 @@
 import { useMemo, createContext, useEffect, useState } from 'react';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
 import {
   COLORS,
   COLOR_MODE_KEY,

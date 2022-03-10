@@ -6,6 +6,7 @@ import createEmotionCache from '../components/createEmotionCache';
 import { HighContrastModeProvider } from '../contexts/HighContrastMode.context';
 import { HardModeProvider } from '../contexts/HardMode.context';
 import { ColorModeProvider } from '../contexts/ColorMode.context';
+
 import '../styles/globals.css';
 
 // Client-side cache, shared for the whole session of the user in the browser.

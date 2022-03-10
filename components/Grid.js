@@ -23,9 +23,8 @@ const rowVariants = {
 };
 
 const cellVariants = {
-  initial: { y: 0, rotateY: 90 },
+  initial: { rotateY: 90 },
   animate: {
-    y: 0,
     rotateY: 0,
     transition: {
       ease: [0.6, 0.01, -0.05, 0.95],
@@ -56,21 +55,12 @@ function generateRow(
   currGuess,
   infoMsg
 ) {
-  if (rowIndex === currRowIndex) {
-    console.log(
-      { rowIndex },
-      { currGuess },
-      { evaluationGuesses },
-      { gameState }
-    );
-  }
   return (
-    // <div key={`${gameState.boardState[rowIndex] ?? 'boardState'} ${rowIndex}`}>
     <div
       key={
         rowIndex === currRowIndex && rowIndex !== gameState.boardState.length
           ? uuidv4()
-          : `${gameState.boardState[rowIndex] ?? 'boardState'} ${rowIndex}`
+          : `${gameState.boardState[rowIndex] ?? ''} ${rowIndex}`
       }
     >
       <motion.div

@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { Box, Divider } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -7,6 +8,17 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { useContext } from 'react';
 import { HighContrastModeContext } from '../../contexts/HighContrastMode.context';
 import { classes, SectionRoot } from './styles/HowToPlayDialogStyles';
+
+const cellVariants = {
+  initial: { rotateY: 90 },
+  animate: {
+    rotateY: 0,
+    transition: {
+      ease: [0.6, 0.01, -0.05, 0.95],
+      duration: 1,
+    },
+  },
+};
 
 export default function HowToPlayDialog({ onClose, open }) {
   const { highContrastMode } = useContext(HighContrastModeContext);
@@ -34,16 +46,23 @@ export default function HowToPlayDialog({ onClose, open }) {
               <strong>Examples</strong>
             </p>
             <div className={classes.cellRow}>
-              <Box
-                sx={{
-                  backgroundColor:
-                    highContrastMode === 'true'
-                      ? 'var(--color-success-high-contrast)'
-                      : 'var(--color-success)',
-                }}
+              <motion.div
+                style={{ border: 0 }}
+                variants={cellVariants}
+                initial="initial"
+                animate="animate"
               >
-                W
-              </Box>
+                <Box
+                  sx={{
+                    backgroundColor:
+                      highContrastMode === 'true'
+                        ? 'var(--color-success-high-contrast)'
+                        : 'var(--color-success)',
+                  }}
+                >
+                  W
+                </Box>
+              </motion.div>
               <div>E</div>
               <div>A</div>
               <div>R</div>
@@ -55,16 +74,23 @@ export default function HowToPlayDialog({ onClose, open }) {
             </div>
             <div className={classes.cellRow}>
               <div>P</div>
-              <Box
-                sx={{
-                  backgroundColor:
-                    highContrastMode === 'true'
-                      ? 'var(--color-alert-high-contrast)'
-                      : 'var(--color-alert)',
-                }}
+              <motion.div
+                style={{ border: 0 }}
+                variants={cellVariants}
+                initial="initial"
+                animate="animate"
               >
-                I
-              </Box>
+                <Box
+                  sx={{
+                    backgroundColor:
+                      highContrastMode === 'true'
+                        ? 'var(--color-alert-high-contrast)'
+                        : 'var(--color-alert)',
+                  }}
+                >
+                  I
+                </Box>
+              </motion.div>
               <div>L</div>
               <div>L</div>
               <div>S</div>
@@ -77,13 +103,20 @@ export default function HowToPlayDialog({ onClose, open }) {
               <div>V</div>
               <div>A</div>
               <div>G</div>
-              <Box
-                sx={{
-                  backgroundColor: 'var(--color-gray-500)',
-                }}
+              <motion.div
+                style={{ border: 0 }}
+                variants={cellVariants}
+                initial="initial"
+                animate="animate"
               >
-                U
-              </Box>
+                <Box
+                  sx={{
+                    backgroundColor: 'var(--color-gray-500)',
+                  }}
+                >
+                  U
+                </Box>
+              </motion.div>
               <div>E</div>
             </div>
             <div className={classes.textBlock}>
