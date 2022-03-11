@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useContext } from 'react';
-import { gameStateInitial } from '../lib/initialGameState';
+import { gameStateInitial } from '../lib/initialGameAndStatisticsState';
 import { useHasMounted } from '../hooks/useHasMounted';
 import Grid from './Grid';
 import Keyboard from './Keyboard';
@@ -21,6 +21,7 @@ export function Wordle({
   setInfoMsg,
   countInfoMsgs,
   setCountInfoMsgs,
+  setStatisticsState,
 }) {
   const { hardMode } = useContext(HardModeContext);
   const hasMounted = useHasMounted();
@@ -125,6 +126,13 @@ export function Wordle({
     [gameState?.solution]
   );
 
+  function calcAvgGuesses(guesses, gamesPlayed, currNumGuesses) {
+    const totalNumGuesses = Object.values(guesses)
+      .slice(0, -1)
+      .reduce((total, num, i) => total + num * (i + 1), 0);
+    return Math.floor((totalNumGuesses + currNumGuesses) / gamesPlayed);
+  }
+
   function handleKey(key) {
     const { boardState, solution } = gameState;
     const boardStateLen = boardState.length;
@@ -185,9 +193,48 @@ export function Wordle({
       });
 
       if (boardStateLen === 5 && currGuess !== solution) {
+        // update Stats
+        setStatisticsState((prevState) => {
+          let { guesses, gamesPlayed } = prevState;
+          let { fail } = guesses;
+
+          const newGameState = {
+            ...prevState,
+            gamesPlayed: (gamesPlayed += 1),
+            guesses: {
+              ...prevState.guesses,
+              fail: (fail += 1),
+            },
+          };
+          return newGameState;
+        });
         setLoseMsg(`The solution is: ${solution}`);
       }
       if (currGuess === solution) {
+        // update Stats
+        setStatisticsState((prevState) => {
+          let { gamesWon, gamesPlayed, guesses } = prevState;
+          const numGuesses = (boardStateLen + 1).toString();
+          let prevGuessNum = prevState.guesses[boardStateLen + 1];
+
+          const newGameState = {
+            ...prevState,
+            // add 1 for curr game (not added yet... using prev state) and add curr num of guesses to get solution
+            averageGuesses: calcAvgGuesses(
+              guesses,
+              gamesPlayed + 1,
+              boardStateLen + 1
+            ),
+            gamesWon: (gamesWon += 1),
+            gamesPlayed: (gamesPlayed += 1),
+            guesses: {
+              ...prevState.guesses,
+              [numGuesses]: (prevGuessNum += 1),
+            },
+          };
+          return newGameState;
+        });
+
         switch (boardStateLen) {
           case 0:
             setWinMsg('Well done!');

@@ -23,7 +23,12 @@ const HeaderStyles = styled('header')(() => ({
   backgroundColor: 'var(--color-background)',
 }));
 
-export default function Header({ gameState, setInfoMsg, setCountInfoMsgs }) {
+export default function Header({
+  gameState,
+  setInfoMsg,
+  setCountInfoMsgs,
+  statisticsState,
+}) {
   const [openHowToPlay, setOpenHowToPlay] = useState(false);
   const [openStatistics, setOpenStatistics] = useState(false);
   const [openSettings, setOpenSettings] = useState(false);
@@ -77,6 +82,7 @@ export default function Header({ gameState, setInfoMsg, setCountInfoMsgs }) {
         open={openStatistics}
         onClose={handleCloseStatistics}
         gameState={gameState}
+        statisticsState={statisticsState}
       />
       <SettingsDialog
         open={openSettings}

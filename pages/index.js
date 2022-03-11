@@ -5,7 +5,10 @@ import { useState } from 'react';
 import Header from '../components/Header/Header';
 import { Wordle } from '../components/Wordle';
 import { useLocalStorage } from '../hooks/useLocalStorage';
-import { gameStateInitial } from '../lib/initialGameState';
+import {
+  gameStateInitial,
+  statisticsStateInitial,
+} from '../lib/initialGameAndStatisticsState';
 
 const PageStyles = styled('div')(() => ({
   minHeight: '100vh',
@@ -26,6 +29,10 @@ export default function Home() {
     'gameState',
     gameStateInitial
   );
+  const [statisticsState, setStatisticsState] = useLocalStorage(
+    'statisticsState',
+    statisticsStateInitial
+  );
   const [infoMsg, setInfoMsg] = useState('');
   const [countInfoMsgs, setCountInfoMsgs] = useState(0);
 
@@ -41,6 +48,7 @@ export default function Home() {
           gameState={gameState}
           setInfoMsg={setInfoMsg}
           setCountInfoMsgs={setCountInfoMsgs}
+          statisticsState={statisticsState}
         />
         <InnerStyles>
           <Wordle
@@ -50,6 +58,7 @@ export default function Home() {
             setInfoMsg={setInfoMsg}
             countInfoMsgs={countInfoMsgs}
             setCountInfoMsgs={setCountInfoMsgs}
+            setStatisticsState={setStatisticsState}
           />
         </InnerStyles>
         <footer style={{ textAlign: 'center', padding: '1rem' }}>
