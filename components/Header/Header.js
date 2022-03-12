@@ -28,9 +28,19 @@ export default function Header({
   setInfoMsg,
   setCountInfoMsgs,
   statisticsState,
+  openStatistics,
+  setOpenStatistics,
 }) {
-  const [openHowToPlay, setOpenHowToPlay] = useState(false);
-  const [openStatistics, setOpenStatistics] = useState(false);
+  const [openHowToPlay, setOpenHowToPlay] = useState(() => {
+    // show how to play Dialog on page load if no games played or started
+    if (
+      statisticsState.gamesPlayed === 0 &&
+      gameState.boardState.length === 0
+    ) {
+      return true;
+    }
+    return false;
+  });
   const [openSettings, setOpenSettings] = useState(false);
 
   const handleClickOpenHowToPlay = () => {

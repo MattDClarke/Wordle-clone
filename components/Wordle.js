@@ -22,6 +22,7 @@ export function Wordle({
   countInfoMsgs,
   setCountInfoMsgs,
   setStatisticsState,
+  setOpenStatistics,
 }) {
   const { hardMode } = useContext(HardModeContext);
   const hasMounted = useHasMounted();
@@ -292,7 +293,17 @@ export function Wordle({
     setCurrGuess('');
     determineEvaluationsAndCurrRowIndex(gameState.boardState);
     determineGameStatus(gameState.boardState);
-  }, [determineEvaluationsAndCurrRowIndex, determineGameStatus, gameState]);
+    if (gameStatus === 'win' || gameStatus === 'lose') {
+      setTimeout(() => {
+        setOpenStatistics(true);
+      }, 2000);
+    }
+  }, [
+    determineEvaluationsAndCurrRowIndex,
+    determineGameStatus,
+    gameState,
+    setOpenStatistics,
+  ]);
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);

@@ -35,6 +35,7 @@ export default function Home() {
   );
   const [infoMsg, setInfoMsg] = useState('');
   const [countInfoMsgs, setCountInfoMsgs] = useState(0);
+  const [openStatistics, setOpenStatistics] = useState(false);
 
   return (
     <>
@@ -49,6 +50,8 @@ export default function Home() {
           setInfoMsg={setInfoMsg}
           setCountInfoMsgs={setCountInfoMsgs}
           statisticsState={statisticsState}
+          openStatistics={openStatistics}
+          setOpenStatistics={setOpenStatistics}
         />
         <InnerStyles>
           <Wordle
@@ -59,6 +62,7 @@ export default function Home() {
             countInfoMsgs={countInfoMsgs}
             setCountInfoMsgs={setCountInfoMsgs}
             setStatisticsState={setStatisticsState}
+            setOpenStatistics={setOpenStatistics}
           />
         </InnerStyles>
         <footer style={{ textAlign: 'center', padding: '1rem' }}>
