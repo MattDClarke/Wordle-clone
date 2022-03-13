@@ -4,9 +4,11 @@ import { v4 as uuidv4 } from 'uuid';
 import Cell from './Cell';
 
 const GridStyles = styled('div')(() => ({
+  flex: 1,
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
+  justifyContent: 'center',
   paddingBottom: '1rem',
 }));
 

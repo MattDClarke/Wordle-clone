@@ -185,15 +185,34 @@ export function Wordle({
       }
 
       const newBoardState = [...boardState, currGuess];
-      setGameState((prevState) => {
-        const newGameState = {
-          ...prevState,
-          boardState: newBoardState,
-        };
-        return newGameState;
-      });
+      // update lastPlayedTs timestamp after first guess
+      if (boardState.length === 0) {
+        setGameState((prevState) => {
+          const newGameState = {
+            ...prevState,
+            boardState: newBoardState,
+            lastPlayedTs: Date.now(),
+          };
+          return newGameState;
+        });
+      } else {
+        setGameState((prevState) => {
+          const newGameState = {
+            ...prevState,
+            boardState: newBoardState,
+          };
+          return newGameState;
+        });
+      }
 
       if (boardStateLen === 5 && currGuess !== solution) {
+        setGameState((prevState) => {
+          const newGameState = {
+            ...prevState,
+            lastCompletedTs: Date.now(),
+          };
+          return newGameState;
+        });
         // update Stats
         setStatisticsState((prevState) => {
           let { guesses, gamesPlayed } = prevState;
@@ -211,7 +230,15 @@ export function Wordle({
         });
         setLoseMsg(`The solution is: ${solution}`);
       }
+
       if (currGuess === solution) {
+        setGameState((prevState) => {
+          const newGameState = {
+            ...prevState,
+            lastCompletedTs: Date.now(),
+          };
+          return newGameState;
+        });
         // update Stats
         setStatisticsState((prevState) => {
           let { gamesWon, gamesPlayed, guesses } = prevState;
@@ -333,6 +360,7 @@ export function Wordle({
       {/* if component not mounted (server render) - display initial game state.  */}
       {/* to make sure server render matches client render - only pass gameState to grid onMount */}
       {/* gameStateInitial acts as placeholder of empty values in grid */}
+      {/* <div style={{  }}> */}
       <Grid
         gameState={hasMounted ? gameState : gameStateInitial}
         evaluationGuesses={evaluationGuesses}
@@ -347,6 +375,7 @@ export function Wordle({
         handleKey={handleKey}
         gameStatus={hasMounted ? gameStatus : 'active'}
       />
+      {/* </div> */}
     </>
   );
 }

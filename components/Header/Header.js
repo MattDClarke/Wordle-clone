@@ -78,7 +78,7 @@ export default function Header({
             <HelpOutlineIcon />
           </IconButton>
         </div>
-        <Typography variant="h1">Wordle Clone</Typography>
+        <Typography variant="h1">Wordle</Typography>
         <IconButton aria-label="Statistics" onClick={handleClickOpenStatistics}>
           <BarChartIcon />
         </IconButton>

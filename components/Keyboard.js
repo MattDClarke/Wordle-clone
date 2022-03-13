@@ -1,6 +1,7 @@
 import { useContext } from 'react';
 import { Box } from '@mui/material';
 import Button from '@mui/material/Button';
+import BackspaceOutlinedIcon from '@mui/icons-material/BackspaceOutlined';
 import { motion } from 'framer-motion';
 
 import { HighContrastModeContext } from '../contexts/HighContrastMode.context';
@@ -48,7 +49,10 @@ export default function Keyboard({ evaluationLetters, handleKey, gameStatus }) {
   return (
     <Box sx={{ textAlign: 'center' }}>
       {keyboardRows.map((keyboardRow, i) => (
-        <div key={i} style={{ display: 'flex' }}>
+        <div
+          key={i}
+          style={{ display: 'flex', width: '90vw', maxWidth: '500px' }}
+        >
           {keyboardRow.map((letter) => {
             const buttonColor = determineButtonColor(letter);
             return (
@@ -57,6 +61,7 @@ export default function Keyboard({ evaluationLetters, handleKey, gameStatus }) {
                 whileHover={{ scale: 1.1 }}
                 whileFocus={{ scale: 1.1 }}
                 transition={{ type: 'spring', stiffness: 500 }}
+                style={{ flex: 1 }}
               >
                 <Button
                   variant="contained"
@@ -66,6 +71,10 @@ export default function Keyboard({ evaluationLetters, handleKey, gameStatus }) {
                   sx={{
                     color: 'var(--color-text)',
                     backgroundColor: buttonColor,
+                    minWidth: 0,
+                    padding: '1rem 0.25rem',
+                    width: '90%',
+
                     '&.MuiButtonBase-root:hover': {
                       bgcolor: buttonColor,
                     },
@@ -74,7 +83,7 @@ export default function Keyboard({ evaluationLetters, handleKey, gameStatus }) {
                     },
                   }}
                 >
-                  {letter}
+                  {letter !== 'BACKSPACE' ? letter : <BackspaceOutlinedIcon />}
                 </Button>
               </motion.div>
             );
