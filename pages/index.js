@@ -1,5 +1,4 @@
 import Head from 'next/head';
-import Image from 'next/image';
 import { styled } from '@mui/material/styles';
 import { useState } from 'react';
 import Header from '../components/Header/Header';
@@ -9,6 +8,9 @@ import {
   gameStateInitial,
   statisticsStateInitial,
 } from '../lib/initialGameAndStatisticsState';
+
+import dbConnect from '../lib/dbConnect';
+import NumOfTheDay from '../models/DailyRandomNum';
 
 const PageStyles = styled('div')(() => ({
   minHeight: '100vh',
@@ -25,7 +27,8 @@ const InnerStyles = styled('main')(() => ({
   flexDirection: 'column',
 }));
 
-export default function Home() {
+export default function Index({ nums }) {
+  console.log('nums from db', nums);
   const [gameState, setGameState] = useLocalStorage(
     'gameState',
     gameStateInitial
@@ -70,3 +73,18 @@ export default function Home() {
     </>
   );
 }
+
+// export async function getServerSideProps() {
+//   await dbConnect();
+
+//   /* find all the data in our database */
+//   const result = await NumOfTheDay.find({});
+//   console.log({ result });
+//   const nums = result.map((doc) => {
+//     const num = doc.toObject();
+//     num._id = num._id.toString();
+//     return num;
+//   });
+
+//   return { props: { nums } };
+// }

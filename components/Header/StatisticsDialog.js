@@ -18,9 +18,11 @@ export default function StatisticsDialog({
         <div>Average num of guesses: {statisticsState.averageGuesses}</div>
         <div>
           Win %:
-          {Math.round(
-            (statisticsState.gamesWon / statisticsState.gamesPlayed) * 100
-          )}
+          {statisticsState.gamesPlayed === 0
+            ? 'No games played yet'
+            : Math.round(
+                (statisticsState.gamesWon / statisticsState.gamesPlayed) * 100
+              )}
         </div>
       </DialogContent>
       <DialogActions>
