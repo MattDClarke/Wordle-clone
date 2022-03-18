@@ -9,9 +9,6 @@ import {
   statisticsStateInitial,
 } from '../lib/initialGameAndStatisticsState';
 
-import dbConnect from '../lib/dbConnect';
-import NumOfTheDay from '../models/DailyRandomNum';
-
 const PageStyles = styled('div')(() => ({
   minHeight: '100vh',
   display: 'flex',
@@ -27,8 +24,7 @@ const InnerStyles = styled('main')(() => ({
   flexDirection: 'column',
 }));
 
-export default function Index({ nums }) {
-  console.log('nums from db', nums);
+export default function Index() {
   const [gameState, setGameState] = useLocalStorage(
     'gameState',
     gameStateInitial
@@ -73,18 +69,3 @@ export default function Index({ nums }) {
     </>
   );
 }
-
-// export async function getServerSideProps() {
-//   await dbConnect();
-
-//   /* find all the data in our database */
-//   const result = await NumOfTheDay.find({});
-//   console.log({ result });
-//   const nums = result.map((doc) => {
-//     const num = doc.toObject();
-//     num._id = num._id.toString();
-//     return num;
-//   });
-
-//   return { props: { nums } };
-// }

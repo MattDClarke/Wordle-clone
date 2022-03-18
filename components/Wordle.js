@@ -29,6 +29,9 @@ export function Wordle({
   const [currGuess, setCurrGuess] = useState('');
   const [loseMsg, setLoseMsg] = useState('');
   const [winMsg, setWinMsg] = useState('');
+  // fetching number of the day
+  const [data, setData] = useState(null);
+  const [isLoading, setLoading] = useState(false);
 
   function toggleSetInfoMsg(msg) {
     setInfoMsg(msg);
@@ -299,22 +302,44 @@ export function Wordle({
     handleKey(e.key);
   }
 
+  // set solution of the day
   useEffect(() => {
     // TODO - request word of the day from server
     //   check date in local storage
     //     compare to today
     //       if today is a new day -> make request for new word
     //          else use state from local storage
-    const randomWord = 'water';
 
-    setGameState((prevState) => {
-      const newGameState = {
-        ...prevState,
-        solution: randomWord.toUpperCase(),
-      };
-      return newGameState;
-    });
-  }, [setGameState]);
+    const currentDate = new Date().toLocaleDateString('en-GB');
+    // === undefined if lastSolutionFetchDate is null (initial state - first time website opened -> need to fetch solution)
+    const lastFetchDate = gameState.lastSolutionFetchDate;
+
+    console.log({ currentDate }, { lastFetchDate });
+
+    if (currentDate !== lastFetchDate) {
+      // API call
+      // get random number for day
+      setLoading(true);
+      fetch(`api/random-num?date=${currentDate}`)
+        .then((res) => res.json())
+        .then((dta) => {
+          console.log(dta.randomNum);
+
+          setData(dta.randomNum);
+          // use number to get word of the day from wordList
+          // set in local storage
+          setGameState((prevState) => {
+            const newGameState = {
+              ...prevState,
+              lastSolutionFetchDate: currentDate,
+              solution: wordList[dta.randomNum].toUpperCase(),
+            };
+            return newGameState;
+          });
+          setLoading(false);
+        });
+    }
+  }, [setGameState, gameState.lastSolutionFetchDate]);
 
   useEffect(() => {
     setCurrGuess('');
@@ -360,7 +385,6 @@ export function Wordle({
       {/* if component not mounted (server render) - display initial game state.  */}
       {/* to make sure server render matches client render - only pass gameState to grid onMount */}
       {/* gameStateInitial acts as placeholder of empty values in grid */}
-      {/* <div style={{  }}> */}
       <Grid
         gameState={hasMounted ? gameState : gameStateInitial}
         evaluationGuesses={evaluationGuesses}
@@ -369,13 +393,13 @@ export function Wordle({
         currRowIndex={currRowIndex}
         currGuess={currGuess}
         infoMsg={infoMsg}
+        isLoading={isLoading}
       />
       <Keyboard
         evaluationLetters={evaluationLetters}
         handleKey={handleKey}
         gameStatus={hasMounted ? gameStatus : 'active'}
       />
-      {/* </div> */}
     </>
   );
 }

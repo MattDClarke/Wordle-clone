@@ -129,9 +129,11 @@ export default function Grid({
   numOfRows,
   currGuess,
   infoMsg,
+  isLoading,
 }) {
   return (
     <GridStyles>
+      {isLoading ? <p>Getting word of the day...</p> : ''}
       {Array(numOfRows)
         .fill(1)
         .map((el, rowIndex) =>
