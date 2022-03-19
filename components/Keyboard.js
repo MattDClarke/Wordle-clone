@@ -11,7 +11,12 @@ const keyboardRow2 = ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'];
 const keyboardRow3 = ['ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'BACKSPACE'];
 const keyboardRows = [keyboardRow1, keyboardRow2, keyboardRow3];
 
-export default function Keyboard({ evaluationLetters, handleKey, gameStatus }) {
+export default function Keyboard({
+  evaluationLetters,
+  handleKey,
+  gameStatus,
+  isLoading,
+}) {
   const { highContrastMode } = useContext(HighContrastModeContext);
 
   function determineButtonColor(letter) {
@@ -43,6 +48,7 @@ export default function Keyboard({ evaluationLetters, handleKey, gameStatus }) {
     // prevent setting currGuess state if game not active
     //    after win and page refresh - prevent setting currGuess state
     if (gameStatus !== 'active') return;
+    console.log('in keyboard', e.target.value);
     handleKey(e.target.value);
   }
 
@@ -66,7 +72,7 @@ export default function Keyboard({ evaluationLetters, handleKey, gameStatus }) {
                 <Button
                   variant="contained"
                   value={letter}
-                  disabled={gameStatus !== 'active'}
+                  disabled={gameStatus !== 'active' || isLoading}
                   onClick={handleClick}
                   sx={{
                     color: 'var(--color-text)',
@@ -83,7 +89,11 @@ export default function Keyboard({ evaluationLetters, handleKey, gameStatus }) {
                     },
                   }}
                 >
-                  {letter !== 'BACKSPACE' ? letter : <BackspaceOutlinedIcon />}
+                  {letter !== 'BACKSPACE' ? (
+                    letter
+                  ) : (
+                    <BackspaceOutlinedIcon style={{ pointerEvents: 'none' }} />
+                  )}
                 </Button>
               </motion.div>
             );

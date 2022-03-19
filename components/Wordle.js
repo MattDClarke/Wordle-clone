@@ -144,6 +144,7 @@ export function Wordle({
     if (boardStateLen === 6) {
       return;
     }
+    console.log({ key });
     const letter = key.toUpperCase();
     if (letter === 'ENTER') {
       if (currGuess.length < 5) {
@@ -297,7 +298,13 @@ export function Wordle({
   }
 
   function handleKeyDown(e) {
-    if (e.ctrlKey || e.metaKey || e.altKey || gameStatus !== 'active') {
+    if (
+      e.ctrlKey ||
+      e.metaKey ||
+      e.altKey ||
+      gameStatus !== 'active' ||
+      isLoading === true
+    ) {
       return;
     }
     handleKey(e.key);
@@ -314,7 +321,6 @@ export function Wordle({
     const currentDate = new Date().toLocaleDateString('en-GB');
     // === undefined if lastSolutionFetchDate is null (initial state - first time website opened -> need to fetch solution)
     const lastFetchDate = gameState.lastSolutionFetchDate;
-
     if (currentDate !== lastFetchDate) {
       // get random number for day
       setLoading(true);
@@ -410,6 +416,7 @@ export function Wordle({
         evaluationLetters={evaluationLetters}
         handleKey={handleKey}
         gameStatus={hasMounted ? gameStatus : 'active'}
+        isLoading={isLoading}
       />
     </>
   );
