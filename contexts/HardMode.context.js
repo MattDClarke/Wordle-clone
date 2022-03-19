@@ -1,6 +1,6 @@
 import { useMemo, createContext, useEffect, useState } from 'react';
 
-import { HARD_MODE_KEY, INITIAL_HARD_MODE_CSS_PROP } from '../lib/constants';
+import { HARD_MODE_KEY, INITIAL_HARD_MODE_CSS_PROP } from '../constants';
 
 export const HardModeContext = createContext();
 

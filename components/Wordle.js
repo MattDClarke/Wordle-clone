@@ -1,10 +1,10 @@
 import { useState, useCallback, useEffect, useContext } from 'react';
-import { gameStateInitial } from '../lib/initialGameAndStatisticsState';
+import { gameStateInitial } from '../helpers/initialGameAndStatisticsState';
 import { useHasMounted } from '../hooks/useHasMounted';
 import Grid from './Grid';
 import Keyboard from './Keyboard';
 import MsgSnackbar from './MsgSnackbar';
-import { wordList } from '../lib/wordList';
+import { wordList } from '../helpers/wordList';
 import { HardModeContext } from '../contexts/HardMode.context';
 
 const wordLength = 5;
@@ -30,7 +30,8 @@ export function Wordle({
   const [loseMsg, setLoseMsg] = useState('');
   const [winMsg, setWinMsg] = useState('');
   // fetching number of the day
-  const [data, setData] = useState(null);
+  const [errorMsg, setErrorMsg] = useState('');
+  const [countErrorMsgs, setCountErrorMsgs] = useState(0);
   const [isLoading, setLoading] = useState(false);
 
   function toggleSetInfoMsg(msg) {
@@ -304,39 +305,43 @@ export function Wordle({
 
   // set solution of the day
   useEffect(() => {
-    // TODO - request word of the day from server
+    // request word of the day from server
     //   check date in local storage
     //     compare to today
     //       if today is a new day -> make request for new word
-    //          else use state from local storage
+    //          else use word from local storage
 
     const currentDate = new Date().toLocaleDateString('en-GB');
     // === undefined if lastSolutionFetchDate is null (initial state - first time website opened -> need to fetch solution)
     const lastFetchDate = gameState.lastSolutionFetchDate;
 
-    console.log({ currentDate }, { lastFetchDate });
-
     if (currentDate !== lastFetchDate) {
-      // API call
       // get random number for day
       setLoading(true);
+      // currentDate = '19/04/2022';
       fetch(`api/random-num?date=${currentDate}`)
         .then((res) => res.json())
         .then((dta) => {
-          console.log(dta.randomNum);
-
-          setData(dta.randomNum);
           // use number to get word of the day from wordList
           // set in local storage
           setGameState((prevState) => {
             const newGameState = {
               ...prevState,
+              // reset game
+              boardState: [],
               lastSolutionFetchDate: currentDate,
               solution: wordList[dta.randomNum].toUpperCase(),
             };
             return newGameState;
           });
           setLoading(false);
+        })
+        .catch(() => {
+          setLoading(false);
+          setErrorMsg('Server error: Problem fetching daily word');
+          setCountErrorMsgs((prevCount) => prevCount + 1);
+          // prevent game being played
+          gameStatus = 'error';
         });
     }
   }, [setGameState, gameState.lastSolutionFetchDate]);
@@ -369,6 +374,12 @@ export function Wordle({
         msg={infoMsg}
         autoHideDuration={2000}
         countMsgs={countInfoMsgs}
+      />
+      <MsgSnackbar
+        msgType="error"
+        msg={errorMsg}
+        autoHideDuration={10000}
+        countMsgs={countErrorMsgs}
       />
       <MsgSnackbar
         msgType="error"

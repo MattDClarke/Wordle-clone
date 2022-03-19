@@ -7,7 +7,7 @@ import { useLocalStorage } from '../hooks/useLocalStorage';
 import {
   gameStateInitial,
   statisticsStateInitial,
-} from '../lib/initialGameAndStatisticsState';
+} from '../helpers/initialGameAndStatisticsState';
 
 const PageStyles = styled('div')(() => ({
   minHeight: '100vh',

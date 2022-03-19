@@ -5,7 +5,7 @@ import {
   COLORS,
   COLOR_MODE_KEY,
   INITIAL_COLOR_MODE_CSS_PROP,
-} from '../lib/constants';
+} from '../constants';
 
 export const ColorModeContext = createContext();
 

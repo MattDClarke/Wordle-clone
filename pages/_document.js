@@ -10,7 +10,7 @@ import {
   INITIAL_HIGH_CONTRAST_MODE_CSS_PROP,
   HARD_MODE_KEY,
   INITIAL_HARD_MODE_CSS_PROP,
-} from '../lib/constants';
+} from '../constants';
 
 // will be stringified, placeholders replaced, and immediately invoked when page loaded - will block HTML rendering
 function setColorsByTheme() {

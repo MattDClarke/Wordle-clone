@@ -11,6 +11,7 @@ const UsedNum = require('../models/UsedNum');
 
 // create initial data
 const UTCDateLow = new Date();
+// mid date - UTC 0 -> or close to it
 const UTCDateMid = new Date();
 const UTCDateHigh = new Date();
 UTCDateLow.setDate(UTCDateLow.getDate() - 1);

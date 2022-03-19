@@ -3,7 +3,7 @@ import { useMemo, createContext, useEffect, useState } from 'react';
 import {
   HIGH_CONTRAST_MODE_KEY,
   INITIAL_HIGH_CONTRAST_MODE_CSS_PROP,
-} from '../lib/constants';
+} from '../constants';
 
 export const HighContrastModeContext = createContext();
 
