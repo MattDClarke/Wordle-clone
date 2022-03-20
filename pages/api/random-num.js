@@ -6,8 +6,8 @@ import catchErrors from '../../utils/errorHandler';
 export default catchErrors(async (req, res) => {
   if (req.method === 'GET') {
     const { date } = req.query;
-    // basic test for correct input
-    if (!/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(date)) {
+    // basic check for correct input
+    if (!/^\d{2}\/\d{2}\/\d{4}$/.test(date)) {
       return res.status(500).json('error - input error');
     }
     await dbConnect();

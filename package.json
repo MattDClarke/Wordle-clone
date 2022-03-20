@@ -6,8 +6,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "loadsamples": "node ./lib/loadInitialData.js",
-    "blowitallaway": "node ./lib/loadInitialData.js --delete"
+    "loadsamples": "node ./helpers/loadInitialData.js",
+    "blowitallaway": "node ./helpers/loadInitialData.js --delete"
   },
   "dependencies": {
     "@emotion/cache": "^11.7.1",

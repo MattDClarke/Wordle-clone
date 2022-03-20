@@ -10,7 +10,6 @@ import { HardModeContext } from '../contexts/HardMode.context';
 const wordLength = 5;
 const numOfRows = 6;
 let currRowIndex = 0;
-let gameStatus = '';
 const evaluationLetters = {};
 let evaluationGuesses = [];
 
@@ -23,6 +22,8 @@ export function Wordle({
   setCountInfoMsgs,
   setStatisticsState,
   setOpenStatistics,
+  gameStatus,
+  setGameStatus,
 }) {
   const { hardMode } = useContext(HardModeContext);
   const hasMounted = useHasMounted();
@@ -121,14 +122,14 @@ export function Wordle({
       // eslint-disable-next-line
       const solution = gameState.solution;
       if (boardState.includes(solution) && solution !== '') {
-        gameStatus = 'win';
+        setGameStatus('win');
       } else if (currRowIndex >= 6) {
-        gameStatus = 'lose';
+        setGameStatus('lose');
       } else {
-        gameStatus = 'active';
+        setGameStatus('active');
       }
     },
-    [gameState?.solution]
+    [gameState?.solution, setGameStatus]
   );
 
   function calcAvgGuesses(guesses, gamesPlayed, currNumGuesses) {
@@ -347,10 +348,10 @@ export function Wordle({
           setErrorMsg('Server error: Problem fetching daily word');
           setCountErrorMsgs((prevCount) => prevCount + 1);
           // prevent game being played
-          gameStatus = 'error';
+          setGameStatus('');
         });
     }
-  }, [setGameState, gameState.lastSolutionFetchDate]);
+  }, [setGameState, gameState.lastSolutionFetchDate, setGameStatus]);
 
   useEffect(() => {
     setCurrGuess('');
@@ -366,6 +367,7 @@ export function Wordle({
     determineGameStatus,
     gameState,
     setOpenStatistics,
+    setGameStatus,
   ]);
 
   useEffect(() => {
@@ -415,7 +417,8 @@ export function Wordle({
       <Keyboard
         evaluationLetters={evaluationLetters}
         handleKey={handleKey}
-        gameStatus={hasMounted ? gameStatus : 'active'}
+        // gameStatus={hasMounted ? gameStatus : 'active'}
+        gameStatus={gameStatus}
         isLoading={isLoading}
       />
     </>

@@ -24,6 +24,7 @@ const HeaderStyles = styled('header')(() => ({
 }));
 
 export default function Header({
+  children,
   gameState,
   setInfoMsg,
   setCountInfoMsgs,
@@ -93,7 +94,9 @@ export default function Header({
         onClose={handleCloseStatistics}
         gameState={gameState}
         statisticsState={statisticsState}
-      />
+      >
+        {children}
+      </StatisticsDialog>
       <SettingsDialog
         open={openSettings}
         onClose={handleCloseSettings}

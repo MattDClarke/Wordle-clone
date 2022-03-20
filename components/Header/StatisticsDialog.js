@@ -5,6 +5,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 
 export default function StatisticsDialog({
+  children,
   onClose,
   open,
   gameState,
@@ -24,6 +25,7 @@ export default function StatisticsDialog({
                 (statisticsState.gamesWon / statisticsState.gamesPlayed) * 100
               )}
         </div>
+        {children}
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Close</Button>

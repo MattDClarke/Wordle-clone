@@ -8,6 +8,8 @@ import {
   gameStateInitial,
   statisticsStateInitial,
 } from '../helpers/initialGameAndStatisticsState';
+import { useCountdown } from '../hooks/useCountdown';
+import ShowCounter from '../components/ShowCounter';
 
 const PageStyles = styled('div')(() => ({
   minHeight: '100vh',
@@ -33,6 +35,17 @@ export default function Index() {
     'statisticsState',
     statisticsStateInitial
   );
+
+  const [gameStatus, setGameStatus] = useState('');
+
+  // countdown timer
+  const currDate = new Date();
+  currDate.setHours(24, 0, 0, 0); // next midnight
+  const nextMidnightTs = currDate.getTime();
+  const [countDown, setCountDown] = useCountdown(nextMidnightTs);
+  const [hours, minutes, seconds] = countDown;
+  console.log('countdown: ', hours, minutes, seconds);
+
   const [infoMsg, setInfoMsg] = useState('');
   const [countInfoMsgs, setCountInfoMsgs] = useState(0);
   const [openStatistics, setOpenStatistics] = useState(false);
@@ -52,7 +65,13 @@ export default function Index() {
           statisticsState={statisticsState}
           openStatistics={openStatistics}
           setOpenStatistics={setOpenStatistics}
-        />
+        >
+          {gameStatus === 'win' || gameStatus === 'lose' ? (
+            <ShowCounter hours={hours} minutes={minutes} seconds={seconds} />
+          ) : (
+            ''
+          )}
+        </Header>
         <InnerStyles>
           <Wordle
             gameState={gameState}
@@ -63,6 +82,8 @@ export default function Index() {
             setCountInfoMsgs={setCountInfoMsgs}
             setStatisticsState={setStatisticsState}
             setOpenStatistics={setOpenStatistics}
+            gameStatus={gameStatus}
+            setGameStatus={setGameStatus}
           />
         </InnerStyles>
       </PageStyles>
