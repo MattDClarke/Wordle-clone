@@ -16,7 +16,13 @@ export default function Keyboard({
   handleKey,
   gameStatus,
   isLoading,
+  gameState,
 }) {
+  // reset evaluationLetters if boardState empty -> when timer reaches zero
+  if (gameState.boardState.length === 0) {
+    evaluationLetters.current = {};
+  }
+
   const { highContrastMode } = useContext(HighContrastModeContext);
 
   function determineButtonColor(letter) {
@@ -25,7 +31,7 @@ export default function Keyboard({
     if (letter === 'ENTER' || letter === 'BACKSPACE') {
       letterGuessState = '';
     } else {
-      letterGuessState = evaluationLetters[letter];
+      letterGuessState = evaluationLetters.current[letter];
     }
     if (letterGuessState === '' || letterGuessState === undefined)
       return 'var(--color-gray-100)';
@@ -48,7 +54,6 @@ export default function Keyboard({
     // prevent setting currGuess state if game not active
     //    after win and page refresh - prevent setting currGuess state
     if (gameStatus !== 'active') return;
-    console.log('in keyboard', e.target.value);
     handleKey(e.target.value);
   }
 

@@ -8,7 +8,6 @@ export default function StatisticsDialog({
   children,
   onClose,
   open,
-  gameState,
   statisticsState,
 }) {
   return (

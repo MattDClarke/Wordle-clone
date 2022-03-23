@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useContext } from 'react';
+import { useState, useCallback, useEffect, useContext, useRef } from 'react';
 import { gameStateInitial } from '../helpers/initialGameAndStatisticsState';
 import { useHasMounted } from '../hooks/useHasMounted';
 import Grid from './Grid';
@@ -10,7 +10,6 @@ import { HardModeContext } from '../contexts/HardMode.context';
 const wordLength = 5;
 const numOfRows = 6;
 let currRowIndex = 0;
-const evaluationLetters = {};
 let evaluationGuesses = [];
 
 export function Wordle({
@@ -24,6 +23,9 @@ export function Wordle({
   setOpenStatistics,
   gameStatus,
   setGameStatus,
+  countDownMsRemaining,
+  setCountDownMsRemaining,
+  isRunning,
 }) {
   const { hardMode } = useContext(HardModeContext);
   const hasMounted = useHasMounted();
@@ -34,6 +36,56 @@ export function Wordle({
   const [errorMsg, setErrorMsg] = useState('');
   const [countErrorMsgs, setCountErrorMsgs] = useState(0);
   const [isLoading, setLoading] = useState(false);
+
+  const evaluationLetters = useRef({});
+
+  const getDailyRandomNum = useCallback(
+    (currDate) => {
+      // pause countdown timer
+      isRunning.current = false;
+      setLoading(true);
+      fetch(`api/random-num?date=${currDate}`)
+        .then((res) => res.json())
+        .then((dta) => {
+          // use number to get word of the day from wordList
+          // set in local storage
+          setGameState((prevState) => {
+            const newGameState = {
+              ...prevState,
+              // reset game
+              boardState: [],
+              lastSolutionFetchDate: currDate,
+              solution: wordList[dta.randomNum].toUpperCase(),
+            };
+            return newGameState;
+          });
+        })
+        .catch(() => {
+          setErrorMsg('Server error: Problem fetching daily word');
+          setCountErrorMsgs((prevCount) => prevCount + 1);
+          // prevent game being played
+          setGameStatus('');
+        })
+        .finally(() => {
+          const currentDate = new Date();
+          const currTs = currentDate.getTime();
+          currentDate.setHours(24, 0, 0, 0); // next midnight
+          const nextMidnightTs = currentDate.getTime();
+          const secondsTillMidnight = nextMidnightTs - currTs;
+          setCountDownMsRemaining(secondsTillMidnight);
+          // // re-start interval timer
+          isRunning.current = true;
+          setLoading(false);
+        });
+    },
+    [setGameStatus, setGameState, setCountDownMsRemaining, isRunning]
+  );
+
+  // fetch new random num of the day if countdown reaches 0
+  if (countDownMsRemaining <= 0 && isLoading !== true) {
+    const currDate = new Date().toLocaleDateString('en-GB');
+    getDailyRandomNum(currDate);
+  }
 
   function toggleSetInfoMsg(msg) {
     setInfoMsg(msg);
@@ -99,7 +151,7 @@ export function Wordle({
           if (letter !== solution[index]) {
             // prevent 'wrongPlace' overwriting 'correct'
             //    'correct' should overwrite 'wrongPlace'
-            if (evaluationLetters[letter] === 'correct') {
+            if (evaluationLetters.current[letter] === 'correct') {
               return;
             }
             evaluation = 'wrongPlace';
@@ -110,7 +162,7 @@ export function Wordle({
         } else {
           evaluation = 'absent';
         }
-        evaluationLetters[letter] = evaluation;
+        evaluationLetters.current[letter] = evaluation;
       });
       currRowIndex = prevGuesses.length;
     },
@@ -145,7 +197,6 @@ export function Wordle({
     if (boardStateLen === 6) {
       return;
     }
-    console.log({ key });
     const letter = key.toUpperCase();
     if (letter === 'ENTER') {
       if (currGuess.length < 5) {
@@ -312,63 +363,41 @@ export function Wordle({
   }
 
   // set solution of the day
+  //   on page load, if lastFetchDate not today
   useEffect(() => {
     // request word of the day from server
     //   check date in local storage
     //     compare to today
     //       if today is a new day -> make request for new word
     //          else use word from local storage
-
     const currentDate = new Date().toLocaleDateString('en-GB');
     // === undefined if lastSolutionFetchDate is null (initial state - first time website opened -> need to fetch solution)
     const lastFetchDate = gameState.lastSolutionFetchDate;
+    console.log(currentDate !== lastFetchDate);
     if (currentDate !== lastFetchDate) {
       // get random number for day
-      setLoading(true);
-      // currentDate = '19/04/2022';
-      fetch(`api/random-num?date=${currentDate}`)
-        .then((res) => res.json())
-        .then((dta) => {
-          // use number to get word of the day from wordList
-          // set in local storage
-          setGameState((prevState) => {
-            const newGameState = {
-              ...prevState,
-              // reset game
-              boardState: [],
-              lastSolutionFetchDate: currentDate,
-              solution: wordList[dta.randomNum].toUpperCase(),
-            };
-            return newGameState;
-          });
-          setLoading(false);
-        })
-        .catch(() => {
-          setLoading(false);
-          setErrorMsg('Server error: Problem fetching daily word');
-          setCountErrorMsgs((prevCount) => prevCount + 1);
-          // prevent game being played
-          setGameStatus('');
-        });
+      getDailyRandomNum(currentDate);
     }
-  }, [setGameState, gameState.lastSolutionFetchDate, setGameStatus]);
+  }, [
+    setGameState,
+    gameState.lastSolutionFetchDate,
+    setGameStatus,
+    getDailyRandomNum,
+  ]);
 
   useEffect(() => {
     setCurrGuess('');
     determineEvaluationsAndCurrRowIndex(gameState.boardState);
     determineGameStatus(gameState.boardState);
+  }, [determineEvaluationsAndCurrRowIndex, determineGameStatus, gameState]);
+
+  useEffect(() => {
     if (gameStatus === 'win' || gameStatus === 'lose') {
       setTimeout(() => {
         setOpenStatistics(true);
       }, 2000);
     }
-  }, [
-    determineEvaluationsAndCurrRowIndex,
-    determineGameStatus,
-    gameState,
-    setOpenStatistics,
-    setGameStatus,
-  ]);
+  }, [gameStatus, setOpenStatistics]);
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
@@ -416,9 +445,9 @@ export function Wordle({
       />
       <Keyboard
         evaluationLetters={evaluationLetters}
+        gameState={hasMounted ? gameState : gameStateInitial}
         handleKey={handleKey}
-        // gameStatus={hasMounted ? gameStatus : 'active'}
-        gameStatus={gameStatus}
+        gameStatus={hasMounted ? gameStatus : 'active'}
         isLoading={isLoading}
       />
     </>

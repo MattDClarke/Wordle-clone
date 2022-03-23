@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import { styled } from '@mui/material/styles';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Header from '../components/Header/Header';
 import { Wordle } from '../components/Wordle';
 import { useLocalStorage } from '../hooks/useLocalStorage';
@@ -8,7 +8,7 @@ import {
   gameStateInitial,
   statisticsStateInitial,
 } from '../helpers/initialGameAndStatisticsState';
-import { useCountdown } from '../hooks/useCountdown';
+import { useInterval } from '../hooks/useInterval';
 import ShowCounter from '../components/ShowCounter';
 
 const PageStyles = styled('div')(() => ({
@@ -40,15 +40,49 @@ export default function Index() {
 
   // countdown timer
   const currDate = new Date();
+  const currTs = currDate.getTime();
   currDate.setHours(24, 0, 0, 0); // next midnight
   const nextMidnightTs = currDate.getTime();
-  const [countDown, setCountDown] = useCountdown(nextMidnightTs);
-  const [hours, minutes, seconds] = countDown;
-  console.log('countdown: ', hours, minutes, seconds);
+  const msTillMidnight = nextMidnightTs - currTs;
+  const [countDownMsRemaining, setCountDownMsRemaining] =
+    useState(msTillMidnight);
+  // TODO: should countDownVals be in state? Derived from countDownMsRemaining state
+  const [countDownVals, setCountDownVals] = useState([null, null, null]);
+  const [hours, minutes, seconds] = countDownVals;
+
+  const [delay, setDelay] = useState(1000);
+  // made it a ref because updating it in Wordle.js (before and after API call)
+  // caused issue with index.js re-render
+  const isRunning = useRef(true);
 
   const [infoMsg, setInfoMsg] = useState('');
   const [countInfoMsgs, setCountInfoMsgs] = useState(0);
   const [openStatistics, setOpenStatistics] = useState(false);
+
+  useInterval(
+    () => {
+      // subtract 1s (1000ms)
+      setCountDownMsRemaining((prevState) => prevState - 1000);
+    },
+    // paused when null
+    isRunning.current ? delay : null
+  );
+
+  // countDown - time in ms
+  function getCountDownValues(countDown) {
+    // calculate time left
+    const h = Math.floor(
+      (countDown % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+    );
+    const m = Math.floor((countDown % (1000 * 60 * 60)) / (1000 * 60));
+    const s = Math.floor((countDown % (1000 * 60)) / 1000);
+
+    return [h, m, s];
+  }
+
+  useEffect(() => {
+    setCountDownVals(getCountDownValues(countDownMsRemaining));
+  }, [countDownMsRemaining]);
 
   return (
     <>
@@ -84,6 +118,9 @@ export default function Index() {
             setOpenStatistics={setOpenStatistics}
             gameStatus={gameStatus}
             setGameStatus={setGameStatus}
+            countDownMsRemaining={countDownMsRemaining}
+            setCountDownMsRemaining={setCountDownMsRemaining}
+            isRunning={isRunning}
           />
         </InnerStyles>
       </PageStyles>

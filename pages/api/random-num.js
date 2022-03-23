@@ -12,7 +12,6 @@ export default catchErrors(async (req, res) => {
     }
     await dbConnect();
     const result = await NumOfTheDay.findOne({ date });
-    // console.log(result);
     if (!result) {
       res.status(500).json('error - database error');
     } else {
