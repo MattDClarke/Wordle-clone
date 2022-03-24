@@ -1,4 +1,3 @@
-import { ContentPasteSearchOutlined } from '@mui/icons-material';
 import dbConnect from '../../utils/dbConnect';
 import NumOfTheDay from '../../models/DailyRandomNum';
 import UsedNum from '../../models/UsedNum';
