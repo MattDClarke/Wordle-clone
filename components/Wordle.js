@@ -373,7 +373,6 @@ export function Wordle({
     const currentDate = new Date().toLocaleDateString('en-GB');
     // === undefined if lastSolutionFetchDate is null (initial state - first time website opened -> need to fetch solution)
     const lastFetchDate = gameState.lastSolutionFetchDate;
-    console.log(currentDate !== lastFetchDate);
     if (currentDate !== lastFetchDate) {
       // get random number for day
       getDailyRandomNum(currentDate);

@@ -9,7 +9,7 @@ import {
 
 export const ColorModeContext = createContext();
 
-export function ColorModeProvider({ children }) {
+export const ColorModeProvider = function ({ children }) {
   const [mode, setMode] = useState(COLOR_MODE_KEY, undefined);
 
   // set state to CSS root variable color mode so that u can update it with toggleColorMode
@@ -123,4 +123,4 @@ export function ColorModeProvider({ children }) {
       <ThemeProvider theme={theme}>{children}</ThemeProvider>
     </ColorModeContext.Provider>
   );
-}
+};
