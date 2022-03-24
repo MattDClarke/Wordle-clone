@@ -1,13 +1,25 @@
 # Wordle Clone
-- This is a Wordle Clone using NextJS and MUI. It is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+
+- This is a Wordle Clone using Next.js, MUI, Express, Mongoose and MongoDB.
+
+<br />
 
 ## Development
 
-- run the development server: `npm run dev`
-- [API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
-- The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+- Development server: `npm run dev`
 - MUI theme details are in colorMode.context.js
-- color styles use CSS variables - see `_document.js`, `colorMode.context,js` and `styles/globals.css`
+- color styles use CSS variables - see `_document.js`, `colorMode.context,js` and '/styles/globals.css'
+- set the intial random numbers in the MongoDB database using the script `npm run loadsamples`.
+    - see '/helpers/loadInitialData.js'
+
+<br />
+
+## Deployment
+
+- add your deployed URL to the GitHub action that sets new random numbers each day in `.github/workflows/scheduled.yaml`
+
+
+<br />
 
 ## Learn More
 
@@ -17,6 +29,9 @@ To learn more about Next.js, take a look at the following resources:
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+
+
+<br />
 
 ## Deploy on Vercel
 

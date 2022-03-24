@@ -30,11 +30,12 @@ const highDateObj = {
   number: 3,
 };
 const initialDailyRandomNums = [lowDateObj, midDateObj, highDateObj];
-const initialUsedNums = { usedNumbers: [1, 2, 3] };
+const initialUsedNums = { name: 'Used random numbers', usedNumbers: [1, 2, 3] };
 async function deleteData() {
   console.log('😢😢 Goodbye Data...');
-  await DailyRandomNum.deleteMany({});
-  await UsedNum.deleteMany({});
+  const DailyRandomNumDeletePromise = DailyRandomNum.deleteMany({});
+  const UsedNumDeletePromise = UsedNum.deleteMany({});
+  await Promise.all([DailyRandomNumDeletePromise, UsedNumDeletePromise]);
 
   console.log(
     'User Data Deleted. To load sample data, run\n\n\t npm run sample\n\n'
@@ -44,8 +45,11 @@ async function deleteData() {
 
 async function loadData() {
   try {
-    await DailyRandomNum.insertMany(initialDailyRandomNums);
-    await UsedNum.insertMany(initialUsedNums);
+    const DailyRandomNumInsertPromise = DailyRandomNum.insertMany(
+      initialDailyRandomNums
+    );
+    const UsedNumInsertPromise = UsedNum.insertMany(initialUsedNums);
+    await Promise.all([DailyRandomNumInsertPromise, UsedNumInsertPromise]);
     console.log('👍👍👍👍👍👍👍👍 Done!');
     process.exit();
   } catch (e) {

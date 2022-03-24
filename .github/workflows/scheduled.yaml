@@ -1,0 +1,14 @@
+# fetch random number at 10am UTC (midnight UTC +14)
+name: Daily random number fetch
+on:
+  schedule:
+    - cron: '0 10 * * *'
+jobs:
+  cron:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call API route
+        run: |
+          curl --request POST \
+          --url '/api/set-random-nums' \
+          --header 'Authorization: Bearer ${{ secrets.ACTION_FETCH_RANDOM_NUM }}'
