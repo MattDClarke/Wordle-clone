@@ -10,5 +10,5 @@ jobs:
       - name: Call API route
         run: |
           curl --request POST \
-          --url '/api/set-random-nums' \
+          --url 'https://wordle-clone-next-js.vercel.app/api/set-random-nums' \
           --header 'Authorization: Bearer ${{ secrets.ACTION_FETCH_RANDOM_NUM }}'
