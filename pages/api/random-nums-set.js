@@ -136,7 +136,8 @@ export default async function handler(req, res) {
       }
     } catch (err) {
       res.status(500).json({
-        message: 'Error setting new daily random numbers',
+        message: err,
+        // message: 'Error setting new daily random numbers',
       });
     }
   } else {
