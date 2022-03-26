@@ -9,28 +9,58 @@ mongoose.connect(process.env.MONGODB_URI);
 const DailyRandomNum = require('../models/DailyRandomNum');
 const UsedNum = require('../models/UsedNum');
 
-// create initial data
-const UTCDateLow = new Date();
+// low: UTC -12
+// mid: UTC +0
+// high: UTC +14
+// highest: UTC +14 + 1 day
+//   if UTC +14 requests new num at midnight - 2 API calls occur:
+//    1. GH action for to add new random num each day
+//    2. API call from UTC +14 user
+//   GH action may be delayed and takes longer than API call from user
+//     best to have random num for thatr day already set
+//      set next days random number (highest) instead
+
+const UTCDate = new Date();
 // mid date - UTC 0 -> or close to it
-const UTCDateMid = new Date();
-const UTCDateHigh = new Date();
-UTCDateLow.setDate(UTCDateLow.getDate() - 1);
-UTCDateHigh.setDate(UTCDateHigh.getDate() + 1);
+const dateMid = UTCDate.toLocaleDateString('en-GB');
+UTCDate.setDate(UTCDate.getDate() - 1);
+const dateLow = UTCDate.toLocaleDateString('en-GB');
+UTCDate.setDate(UTCDate.getDate() + 2);
+const dateHigh = UTCDate.toLocaleDateString('en-GB');
+UTCDate.setDate(UTCDate.getDate() + 1);
+const dateHighest = UTCDate.toLocaleDateString('en-GB');
 
 const lowDateObj = {
-  date: UTCDateLow.toLocaleDateString('en-GB'),
+  date: dateLow,
   number: 1,
 };
+
 const midDateObj = {
-  date: UTCDateMid.toLocaleDateString('en-GB'),
+  date: dateMid,
   number: 2,
 };
+
 const highDateObj = {
-  date: UTCDateHigh.toLocaleDateString('en-GB'),
+  date: dateHigh,
   number: 3,
 };
-const initialDailyRandomNums = [lowDateObj, midDateObj, highDateObj];
-const initialUsedNums = { name: 'Used random numbers', usedNumbers: [1, 2, 3] };
+
+const highestDateObj = {
+  date: dateHighest,
+  number: 4,
+};
+
+const initialDailyRandomNums = [
+  lowDateObj,
+  midDateObj,
+  highDateObj,
+  highestDateObj,
+];
+
+const initialUsedNums = {
+  name: 'Used random numbers',
+  usedNumbers: [1, 2, 3, 4],
+};
 async function deleteData() {
   console.log('😢😢 Goodbye Data...');
   const DailyRandomNumDeletePromise = DailyRandomNum.deleteMany({});

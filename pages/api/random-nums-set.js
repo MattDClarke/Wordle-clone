@@ -65,23 +65,23 @@ export default async function handler(req, res) {
         );
 
         // get date for new day UTC +14 (api called by GitHub action at 10am UTC / midnight UTC +14)
-        // next day (+ 1 day)
+        // set next day (UTC+14 + 1 day)
         const UTCDate = new Date();
 
-        UTCDate.setDate(UTCDate.getDate() + 1);
+        UTCDate.setDate(UTCDate.getDate() + 2);
         // get format: yyyy/mm/dd
-        const dateHigh = UTCDate.toLocaleDateString('en-GB');
-        UTCDate.setDate(UTCDate.getDate() - 3);
+        const dateHighest = UTCDate.toLocaleDateString('en-GB');
+        UTCDate.setDate(UTCDate.getDate() - 4);
         const dateLow = UTCDate.toLocaleDateString('en-GB');
 
-        const highDateObj = {
-          date: dateHigh,
+        const highestDateObj = {
+          date: dateHighest,
           number: unUsedRandomNum,
         };
 
         // add new random num
         const newNumOfTheDayAddPromise = await new NumOfTheDay(
-          highDateObj
+          highestDateObj
         ).save();
 
         // add new random num to UsedNum collection - replace prev array
