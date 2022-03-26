@@ -29,6 +29,7 @@ function getUnUsedRandomNum(usedNumsArr, maxVal) {
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
+    console.log('POST request');
     try {
       const { authorization } = req.headers;
       if (authorization === `Bearer ${process.env.ACTION_FETCH_RANDOM_NUM}`) {

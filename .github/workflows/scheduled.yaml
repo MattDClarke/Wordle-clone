@@ -2,7 +2,8 @@
 name: Daily random number fetch
 on:
   schedule:
-    - cron: '0 10 * * *'
+    # - cron: '0 10 * * *'
+    - cron: '55 12 * * *'
 jobs:
   cron:
     runs-on: ubuntu-latest
