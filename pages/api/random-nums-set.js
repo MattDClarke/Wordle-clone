@@ -31,6 +31,15 @@ export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
       const { authorization } = req.headers;
+      const { Authorization } = req.headers;
+      console.log(
+        'auth header === env var: ',
+        authorization === `Bearer ${process.env.ACTION_FETCH_RANDOM_NUM}`
+      );
+      console.log(
+        'Auth header === env var: ',
+        Authorization === `Bearer ${process.env.ACTION_FETCH_RANDOM_NUM}`
+      );
       if (authorization === `Bearer ${process.env.ACTION_FETCH_RANDOM_NUM}`) {
         await dbConnect();
 
