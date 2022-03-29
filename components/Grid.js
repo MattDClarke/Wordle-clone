@@ -35,6 +35,19 @@ const cellVariants = {
   },
 };
 
+const cellWinVariants = {
+  initial: { rotateY: 90, y: -50, x: -50 },
+  animate: {
+    rotateY: 0,
+    y: 0,
+    x: 0,
+    transition: {
+      ease: [0.6, 0.01, -0.05, 0.95],
+      duration: 1,
+    },
+  },
+};
+
 const itemVariants = {
   noAnimate: {
     x: 0,
@@ -77,7 +90,11 @@ function generateRow(
             rowIndex < currRowIndex && evaluationGuesses[rowIndex] ? (
               <motion.div
                 key={letterIndex + evaluationGuesses[rowIndex]}
-                variants={cellVariants}
+                variants={
+                  gameState.boardState[rowIndex] === gameState.solution
+                    ? cellWinVariants
+                    : cellVariants
+                }
               >
                 <Cell
                   rowIndex={rowIndex}
