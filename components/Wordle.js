@@ -1,4 +1,11 @@
-import { useState, useCallback, useEffect, useContext, useRef } from 'react';
+import {
+  useState,
+  useCallback,
+  useEffect,
+  useContext,
+  useRef,
+  memo,
+} from 'react';
 import { gameStateInitial } from '../helpers/initialGameAndStatisticsState';
 import { useHasMounted } from '../hooks/useHasMounted';
 import Grid from './Grid';
@@ -12,7 +19,7 @@ const numOfRows = 6;
 let currRowIndex = 0;
 let evaluationGuesses = [];
 
-export function Wordle({
+function Wordle({
   gameState,
   setGameState,
   infoMsg,
@@ -23,7 +30,8 @@ export function Wordle({
   setOpenStatistics,
   gameStatus,
   setGameStatus,
-  countDownMsRemaining,
+  countDownFinished,
+  setCountDownFinished,
   setCountDownMsRemaining,
   isRunning,
 }) {
@@ -73,16 +81,23 @@ export function Wordle({
           const nextMidnightTs = currentDate.getTime();
           const secondsTillMidnight = nextMidnightTs - currTs;
           setCountDownMsRemaining(secondsTillMidnight);
+          setCountDownFinished(false);
           // // re-start interval timer
           isRunning.current = true;
           setLoading(false);
         });
     },
-    [setGameStatus, setGameState, setCountDownMsRemaining, isRunning]
+    [
+      setGameStatus,
+      setGameState,
+      setCountDownMsRemaining,
+      isRunning,
+      setCountDownFinished,
+    ]
   );
 
   // fetch new random num of the day if countdown reaches 0
-  if (countDownMsRemaining <= 0 && isLoading !== true) {
+  if (countDownFinished && isLoading !== true) {
     const currDate = new Date().toLocaleDateString('en-GB');
     getDailyRandomNum(currDate);
   }
@@ -452,3 +467,5 @@ export function Wordle({
     </>
   );
 }
+
+export default memo(Wordle);

@@ -2,7 +2,7 @@ import Head from 'next/head';
 import { styled } from '@mui/material/styles';
 import { useEffect, useRef, useState } from 'react';
 import Header from '../components/Header/Header';
-import { Wordle } from '../components/Wordle';
+import Wordle from '../components/Wordle';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import {
   gameStateInitial,
@@ -46,6 +46,8 @@ export default function Index() {
   const msTillMidnight = nextMidnightTs - currTs;
   const [countDownMsRemaining, setCountDownMsRemaining] =
     useState(msTillMidnight);
+  // pass T / F to Wordle component instead of countDownMsRemaining to prevent re-renders each second
+  const [countDownFinished, setCountDownFinished] = useState(false);
   // TODO: should countDownVals be in state? Derived from countDownMsRemaining state
   const [countDownVals, setCountDownVals] = useState([null, null, null]);
   const [hours, minutes, seconds] = countDownVals;
@@ -82,6 +84,9 @@ export default function Index() {
 
   useEffect(() => {
     setCountDownVals(getCountDownValues(countDownMsRemaining));
+    if (countDownMsRemaining <= 0) {
+      setCountDownFinished(true);
+    }
   }, [countDownMsRemaining]);
 
   return (
@@ -92,6 +97,7 @@ export default function Index() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <PageStyles>
+        {/* <Header2 /> */}
         <Header
           gameState={gameState}
           setInfoMsg={setInfoMsg}
@@ -118,7 +124,8 @@ export default function Index() {
             setOpenStatistics={setOpenStatistics}
             gameStatus={gameStatus}
             setGameStatus={setGameStatus}
-            countDownMsRemaining={countDownMsRemaining}
+            countDownFinished={countDownFinished}
+            setCountDownFinished={setCountDownFinished}
             setCountDownMsRemaining={setCountDownMsRemaining}
             isRunning={isRunning}
           />

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { styled } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
@@ -23,7 +23,7 @@ const HeaderStyles = styled('header')(() => ({
   backgroundColor: 'var(--color-background)',
 }));
 
-export default function Header({
+function Header({
   children,
   gameState,
   setInfoMsg,
@@ -107,3 +107,5 @@ export default function Header({
     </>
   );
 }
+
+export default memo(Header);
