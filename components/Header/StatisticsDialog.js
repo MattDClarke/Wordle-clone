@@ -15,15 +15,17 @@ export default function StatisticsDialog({
       <DialogTitle sx={{ textAlign: 'center' }}>Statistics</DialogTitle>
       <DialogContent>
         <div>Played: {statisticsState.gamesPlayed}</div>
-        <div>Average num of guesses: {statisticsState.averageGuesses}</div>
+        {/* <div>Average num of guesses: {statisticsState.averageGuesses}</div> */}
         <div>
-          Win %:
+          Win %:{' '}
           {statisticsState.gamesPlayed === 0
             ? 'No games played yet'
             : Math.round(
                 (statisticsState.gamesWon / statisticsState.gamesPlayed) * 100
               )}
         </div>
+        <div>Current Streak: {statisticsState.currentStreak}</div>
+        <div>Max Streak: {statisticsState.maxStreak}</div>
         {children}
       </DialogContent>
       <DialogActions>
