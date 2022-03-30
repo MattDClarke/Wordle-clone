@@ -1,10 +1,11 @@
 import React from 'react';
 
-export default function DateTimeDisplay({ value, type }) {
+export default function DateTimeDisplay({ value }) {
+  console.log(typeof value);
   return (
-    <div className="countdown">
-      <p>{value}</p>
-      <span>{type}</span>
-    </div>
+    <span style={{ padding: '0 0.1rem' }}>
+      {value < 10 ? '0' : ''}
+      {value}
+    </span>
   );
 }

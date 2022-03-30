@@ -1,6 +1,9 @@
 import Head from 'next/head';
 import { styled } from '@mui/material/styles';
 import { useEffect, useRef, useState } from 'react';
+import { Button } from '@mui/material';
+import Box from '@mui/material/Box';
+import ShareIcon from '@mui/icons-material/Share';
 import Header from '../components/Header/Header';
 import Wordle from '../components/Wordle';
 import { useLocalStorage } from '../hooks/useLocalStorage';
@@ -107,7 +110,24 @@ export default function Index() {
           setOpenStatistics={setOpenStatistics}
         >
           {gameStatus === 'win' || gameStatus === 'lose' ? (
-            <ShowCounter hours={hours} minutes={minutes} seconds={seconds} />
+            <Box
+              sx={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <ShowCounter hours={hours} minutes={minutes} seconds={seconds} />
+              <Button
+                variant="contained"
+                color="success"
+                endIcon={<ShareIcon />}
+                sx={{ height: '45px' }}
+              >
+                Share
+              </Button>
+            </Box>
           ) : (
             ''
           )}

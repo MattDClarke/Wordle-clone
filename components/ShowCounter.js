@@ -1,13 +1,20 @@
+import { Typography } from '@mui/material';
 import DateTimeDisplay from './DateTimeDisplay';
 
 export default function ShowCounter({ hours, minutes, seconds }) {
   return (
-    <div className="show-counter">
-      <DateTimeDisplay value={hours} type="Hours" />
-      <p>:</p>
-      <DateTimeDisplay value={minutes} type="Mins" />
-      <p>:</p>
-      <DateTimeDisplay value={seconds} type="Seconds" />
+    <div style={{ textAlign: 'center', padding: '1rem' }}>
+      <Typography variant="subtitle" component="h3">
+        Next Wordle
+      </Typography>
+
+      <Typography variant="h1" component="div">
+        <DateTimeDisplay value={hours} />
+        :
+        <DateTimeDisplay value={minutes} />
+        :
+        <DateTimeDisplay value={seconds} />
+      </Typography>
     </div>
   );
 }
