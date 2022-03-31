@@ -10,6 +10,13 @@ export default function StatisticsDialog({
   open,
   statisticsState,
 }) {
+  function getFormattedDate(ts) {
+    const date = new Date(ts);
+    const [year, day] = [date.getFullYear(), date.getDate()];
+    const month = date.toLocaleString('default', { month: 'long' });
+    return `${day} ${month} ${year}`;
+  }
+
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle sx={{ textAlign: 'center' }}>Statistics</DialogTitle>
@@ -26,6 +33,11 @@ export default function StatisticsDialog({
         </div>
         <div>Current Streak: {statisticsState.currentStreak}</div>
         <div>Max Streak: {statisticsState.maxStreak}</div>
+        <div>
+          {statisticsState.lastPlayedTs
+            ? `Last played: ${getFormattedDate(statisticsState.lastPlayedTs)}`
+            : ''}
+        </div>
         {children}
       </DialogContent>
       <DialogActions>

@@ -257,15 +257,22 @@ function Wordle({
       }
 
       const newBoardState = [...boardState, currGuess];
-      // update lastPlayedTs timestamp after first guess
       if (boardState.length === 0) {
         setGameState((prevState) => {
           const newGameState = {
             ...prevState,
             boardState: newBoardState,
-            lastPlayedTs: Date.now(),
           };
           return newGameState;
+        });
+
+        // update lastPlayedTs timestamp after first guess
+        setStatisticsState((prevState) => {
+          const newStatisticsState = {
+            ...prevState,
+            lastPlayedTs: Date.now(),
+          };
+          return newStatisticsState;
         });
       } else {
         setGameState((prevState) => {
@@ -283,7 +290,7 @@ function Wordle({
           let { guesses, gamesPlayed } = prevState;
           let { fail } = guesses;
 
-          const newGameState = {
+          const newStatisticsState = {
             ...prevState,
             gamesPlayed: (gamesPlayed += 1),
             guesses: {
@@ -292,7 +299,7 @@ function Wordle({
             },
             currentStreak: 0,
           };
-          return newGameState;
+          return newStatisticsState;
         });
         setLoseMsg(`The solution is: ${solution}`);
       }
@@ -326,7 +333,7 @@ function Wordle({
           const numGuesses = (boardStateLen + 1).toString();
           let prevGuessNum = prevState.guesses[boardStateLen + 1];
 
-          const newGameState = {
+          const newStatisticsState = {
             ...prevState,
             // add 1 for curr game (not added yet... using prev state) and add curr num of guesses to get solution
             averageGuesses: calcAvgGuesses(
@@ -346,7 +353,7 @@ function Wordle({
                 ? currentStreak
                 : maxStreak,
           };
-          return newGameState;
+          return newStatisticsState;
         });
 
         switch (boardStateLen) {
