@@ -21,22 +21,33 @@ export default function StatisticsDialog({
     <Dialog open={open} onClose={onClose}>
       <DialogTitle sx={{ textAlign: 'center' }}>Statistics</DialogTitle>
       <DialogContent>
-        <div>Played: {statisticsState.gamesPlayed}</div>
+        <div>
+          <b>Played:</b> {statisticsState.gamesPlayed}
+        </div>
         {/* <div>Average num of guesses: {statisticsState.averageGuesses}</div> */}
         <div>
-          Win %:{' '}
+          <b>Win %:</b>{' '}
           {statisticsState.gamesPlayed === 0
             ? 'No games played yet'
             : Math.round(
                 (statisticsState.gamesWon / statisticsState.gamesPlayed) * 100
               )}
         </div>
-        <div>Current Streak: {statisticsState.currentStreak}</div>
-        <div>Max Streak: {statisticsState.maxStreak}</div>
         <div>
-          {statisticsState.lastPlayedTs
-            ? `Last played: ${getFormattedDate(statisticsState.lastPlayedTs)}`
-            : ''}
+          <b>Current Streak:</b> {statisticsState.currentStreak}
+        </div>
+        <div>
+          <b>Max Streak:</b> {statisticsState.maxStreak}
+        </div>
+        <div>
+          {statisticsState.lastPlayedTs ? (
+            <>
+              <b>Last played: </b>{' '}
+              <span>{getFormattedDate(statisticsState.lastPlayedTs)}</span>
+            </>
+          ) : (
+            ''
+          )}
         </div>
         {children}
       </DialogContent>
