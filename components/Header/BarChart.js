@@ -30,7 +30,13 @@ function BarChart({ statisticsState }) {
 
   const options = {
     responsive: true,
-
+    scales: {
+      yAxis: {
+        ticks: {
+          precision: 0,
+        },
+      },
+    },
     plugins: {
       legend: {
         display: false,
