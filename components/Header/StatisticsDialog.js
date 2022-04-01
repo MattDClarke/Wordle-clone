@@ -59,7 +59,7 @@ export default function StatisticsDialog({
         )}
         {children}
         {statisticsState.lastPlayedTs ? (
-          <div style={{ textAlign: 'center' }}>
+          <div style={{ textAlign: 'center', paddingTop: '1rem' }}>
             <b>Last played: </b>{' '}
             <span>{getFormattedDate(statisticsState.lastPlayedTs)}</span>
           </div>
