@@ -1,8 +1,10 @@
+import { Grid } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import { classes, GridRoot } from './styles/StatisticsDialogStyles';
 
 export default function StatisticsDialog({
   children,
@@ -21,35 +23,49 @@ export default function StatisticsDialog({
     <Dialog open={open} onClose={onClose}>
       <DialogTitle sx={{ textAlign: 'center' }}>Statistics</DialogTitle>
       <DialogContent>
-        <div>
-          <b>Played:</b> {statisticsState.gamesPlayed}
-        </div>
-        {/* <div>Average num of guesses: {statisticsState.averageGuesses}</div> */}
-        <div>
-          <b>Win %:</b>{' '}
-          {statisticsState.gamesPlayed === 0
-            ? 'No games played yet'
-            : Math.round(
+        {statisticsState.gamesPlayed === 0 ? (
+          <div>No games completed yet.</div>
+        ) : (
+          <GridRoot container>
+            <Grid item xs={3} className={classes.GridItemValue}>
+              {statisticsState.gamesPlayed}
+            </Grid>
+            <Grid item xs={3} className={classes.GridItemValue}>
+              {Math.round(
                 (statisticsState.gamesWon / statisticsState.gamesPlayed) * 100
               )}
-        </div>
-        <div>
-          <b>Current Streak:</b> {statisticsState.currentStreak}
-        </div>
-        <div>
-          <b>Max Streak:</b> {statisticsState.maxStreak}
-        </div>
-        <div>
-          {statisticsState.lastPlayedTs ? (
-            <>
-              <b>Last played: </b>{' '}
-              <span>{getFormattedDate(statisticsState.lastPlayedTs)}</span>
-            </>
-          ) : (
-            ''
-          )}
-        </div>
+            </Grid>
+            <Grid item xs={3} className={classes.GridItemValue}>
+              {statisticsState.currentStreak}
+            </Grid>
+            <Grid item xs={3} className={classes.GridItemValue}>
+              {statisticsState.maxStreak}
+            </Grid>
+            <Grid item xs={3} className={classes.GridItemTitle}>
+              Played
+            </Grid>
+            <Grid item xs={3} className={classes.GridItemTitle}>
+              Win %
+            </Grid>
+            <Grid item xs={3} className={classes.GridItemTitle}>
+              <div>Current</div>
+              <div>Streak</div>
+            </Grid>
+            <Grid item xs={3} className={classes.GridItemTitle}>
+              <div>Max</div>
+              <div>Streak</div>
+            </Grid>
+          </GridRoot>
+        )}
         {children}
+        {statisticsState.lastPlayedTs ? (
+          <div style={{ textAlign: 'center' }}>
+            <b>Last played: </b>{' '}
+            <span>{getFormattedDate(statisticsState.lastPlayedTs)}</span>
+          </div>
+        ) : (
+          ''
+        )}
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Close</Button>

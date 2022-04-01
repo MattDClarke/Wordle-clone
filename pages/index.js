@@ -111,7 +111,7 @@ export default function Index() {
           setOpenStatistics={setOpenStatistics}
         >
           {gameStatus === 'win' || gameStatus === 'lose' ? (
-            <Box sx={{ py: 4, textAlign: 'center' }}>
+            <Box sx={{ paddingTop: 4, textAlign: 'center' }}>
               <Typography variant="subtitle" component="h3">
                 Guess Distribution
               </Typography>
@@ -122,6 +122,7 @@ export default function Index() {
                   flexWrap: 'wrap',
                   alignItems: 'center',
                   justifyContent: 'center',
+                  paddingTop: '1rem',
                 }}
               >
                 <ShowCounter
