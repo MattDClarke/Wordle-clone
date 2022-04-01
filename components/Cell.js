@@ -60,7 +60,7 @@ export default function Cell({
         height: '50px',
         margin: '0.1rem',
         border: 2,
-        borderColor: 'var(--color-gray-500)',
+        borderColor: 'var(--color-gray-300)',
         color: 'var(--color-text)',
         backgroundColor:
           // color guessed words
