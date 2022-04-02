@@ -22,7 +22,7 @@ export const SectionRoot = styled('section')(() => ({
       width: '30px',
       height: '30px',
       margin: '0.1rem',
-      border: '2px solid var(--color-gray-500)',
+      border: '2px solid var(--color-gray-300)',
       color: 'var(--color-text)',
     },
   },

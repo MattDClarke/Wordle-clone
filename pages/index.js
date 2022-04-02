@@ -1,10 +1,9 @@
 import Head from 'next/head';
 import { styled } from '@mui/material/styles';
 import { useEffect, useRef, useState } from 'react';
-import { Button, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
-import ShareIcon from '@mui/icons-material/Share';
 import Header from '../components/Header/Header';
+import ShareButton from '../components/Header/ShareButton';
 import Wordle from '../components/Wordle';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import {
@@ -13,7 +12,6 @@ import {
 } from '../helpers/initialGameAndStatisticsState';
 import { useInterval } from '../hooks/useInterval';
 import ShowCounter from '../components/ShowCounter';
-import BarChart from '../components/Header/BarChart';
 
 const PageStyles = styled('div')(() => ({
   minHeight: '100vh',
@@ -101,7 +99,6 @@ export default function Index() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <PageStyles>
-        {/* <Header2 /> */}
         <Header
           gameState={gameState}
           setInfoMsg={setInfoMsg}
@@ -111,11 +108,7 @@ export default function Index() {
           setOpenStatistics={setOpenStatistics}
         >
           {gameStatus === 'win' || gameStatus === 'lose' ? (
-            <Box sx={{ paddingTop: 4, textAlign: 'center' }}>
-              <Typography variant="subtitle" component="h3">
-                Guess Distribution
-              </Typography>
-              <BarChart statisticsState={statisticsState} />
+            <div>
               <Box
                 sx={{
                   display: 'flex',
@@ -130,16 +123,9 @@ export default function Index() {
                   minutes={minutes}
                   seconds={seconds}
                 />
-                <Button
-                  variant="contained"
-                  color="success"
-                  endIcon={<ShareIcon />}
-                  sx={{ height: '45px' }}
-                >
-                  Share
-                </Button>
+                {gameStatus === 'win' && <ShareButton />}
               </Box>
-            </Box>
+            </div>
           ) : (
             ''
           )}
