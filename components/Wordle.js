@@ -17,7 +17,6 @@ import { HardModeContext } from '../contexts/HardMode.context';
 const wordLength = 5;
 const numOfRows = 6;
 let currRowIndex = 0;
-let evaluationGuesses = [];
 
 function Wordle({
   gameState,
@@ -62,6 +61,7 @@ function Wordle({
               ...prevState,
               // reset game
               boardState: [],
+              evaluations: [],
               lastSolutionFetchDate: currDate,
               solution: wordList[dta.randomNum].toUpperCase(),
             };
@@ -127,7 +127,7 @@ function Wordle({
   }
 
   // input - arrays
-  function determineGuessEvaluation(guess, solution) {
+  function determineEvaluations(guess, solution) {
     return guess.map((letter, i) => {
       if (solution.includes(letter)) {
         if (letter === solution[i]) {
@@ -139,15 +139,12 @@ function Wordle({
     });
   }
 
-  const determineEvaluationsAndCurrRowIndex = useCallback(
+  const determineEvaluationLettersAndCurrRowIndex = useCallback(
     (boardState) => {
       const solution = [...gameState.solution];
       // determine state of each letter for keyboard: 'absent, 'wrongPlace' or 'correct'
       const prevGuesses = boardState.filter((guess) => guess !== '');
 
-      evaluationGuesses = prevGuesses.map((guess) =>
-        determineGuessEvaluation([...guess], solution)
-      );
       //  for each prevGuess
       //      make guess (string) an array using spread operator
       //         map through - for each letter - compare to solution to determine 'wrongPlace', 'correct' or 'absent
@@ -207,7 +204,7 @@ function Wordle({
   }
 
   function handleKey(key) {
-    const { boardState, solution, lastWonTs } = gameState;
+    const { boardState, evaluations, solution, lastWonTs } = gameState;
     const boardStateLen = boardState.length;
     if (boardStateLen === 6) {
       return;
@@ -226,16 +223,21 @@ function Wordle({
         return;
       }
 
-      // Hardmode check
+      const currGuessArr = [...currGuess];
+      // Hard mode check
       if (hardMode === 'true' && boardState.length > 0) {
+        const evaluationsFiltered = evaluations.filter(
+          (guess) => guess !== null
+        );
+
         const lastGuessEvaluation =
-          evaluationGuesses[evaluationGuesses.length - 1];
-        const currGuessArr = [...currGuess];
-        const currGuessEvaluation = determineGuessEvaluation(currGuessArr, [
+          evaluationsFiltered[evaluationsFiltered.length - 1];
+        const currGuessEvaluation = determineEvaluations(currGuessArr, [
           ...solution,
         ]);
 
-        const lastGuessArr = boardState[boardState.length - 1];
+        const lastGuessStr = boardState[boardState.length - 1];
+
         for (const [i, evaluation] of lastGuessEvaluation.entries()) {
           if (
             evaluation === 'correct' &&
@@ -247,9 +249,9 @@ function Wordle({
           }
           if (
             evaluation === 'wrongPlace' &&
-            !currGuessArr.includes(lastGuessArr[i])
+            !currGuessArr.includes(lastGuessStr[i])
           ) {
-            toggleSetInfoMsg(`Guess must contain ${lastGuessArr[i]}`);
+            toggleSetInfoMsg(`Guess must contain ${lastGuessStr[i]}`);
             setCountInfoMsgs(countInfoMsgs + 1);
             return;
           }
@@ -257,11 +259,27 @@ function Wordle({
       }
 
       const newBoardState = [...boardState, currGuess];
+
+      // Determine evaluations state - add to local storage
+      const newEvaluations = [];
+
+      for (let i = 0; i < numOfRows; i += 1) {
+        if (newBoardState[i]) {
+          newEvaluations[i] = determineEvaluations(
+            [...newBoardState[i]],
+            [...solution]
+          );
+        } else {
+          newEvaluations[i] = null;
+        }
+      }
+
       if (boardState.length === 0) {
         setGameState((prevState) => {
           const newGameState = {
             ...prevState,
             boardState: newBoardState,
+            evaluations: newEvaluations,
           };
           return newGameState;
         });
@@ -279,11 +297,13 @@ function Wordle({
           const newGameState = {
             ...prevState,
             boardState: newBoardState,
+            evaluations: newEvaluations,
           };
           return newGameState;
         });
       }
 
+      // Lose
       if (boardStateLen === 5 && currGuess !== solution) {
         // update Stats
         setStatisticsState((prevState) => {
@@ -304,6 +324,7 @@ function Wordle({
         setLoseMsg(`The solution is: ${solution}`);
       }
 
+      // Win
       if (currGuess === solution) {
         // get last won date
         const lastWonDate = new Date(lastWonTs);
@@ -422,9 +443,13 @@ function Wordle({
 
   useEffect(() => {
     setCurrGuess('');
-    determineEvaluationsAndCurrRowIndex(gameState.boardState);
+    determineEvaluationLettersAndCurrRowIndex(gameState.boardState);
     determineGameStatus(gameState.boardState);
-  }, [determineEvaluationsAndCurrRowIndex, determineGameStatus, gameState]);
+  }, [
+    determineEvaluationLettersAndCurrRowIndex,
+    determineGameStatus,
+    gameState,
+  ]);
 
   useEffect(() => {
     if (gameStatus === 'win' || gameStatus === 'lose') {
@@ -470,7 +495,6 @@ function Wordle({
       {/* gameStateInitial acts as placeholder of empty values in grid */}
       <Grid
         gameState={hasMounted ? gameState : gameStateInitial}
-        evaluationGuesses={evaluationGuesses}
         wordLength={wordLength}
         numOfRows={numOfRows}
         currRowIndex={currRowIndex}

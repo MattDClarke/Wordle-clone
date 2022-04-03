@@ -64,18 +64,21 @@ const itemVariants = {
 function generateRow(
   rowIndex,
   gameState,
-  evaluationGuesses,
   wordLength,
   currRowIndex,
   currGuess,
   infoMsg
 ) {
+  const { boardState, solution } = gameState;
+  let { evaluations } = gameState;
+  // evaluations is an added property - if it does not exist - set to empty array
+  if (evaluations === undefined) evaluations = [];
   return (
     <div
       key={
-        rowIndex === currRowIndex && rowIndex !== gameState.boardState.length
+        rowIndex === currRowIndex && rowIndex !== boardState.length
           ? uuidv4()
-          : `${gameState.boardState[rowIndex] ?? ''} ${rowIndex}`
+          : `${boardState[rowIndex] ?? ''} ${rowIndex}`
       }
     >
       <motion.div
@@ -87,11 +90,11 @@ function generateRow(
         {Array(wordLength)
           .fill(1)
           .map((el, letterIndex) =>
-            rowIndex < currRowIndex && evaluationGuesses[rowIndex] ? (
+            rowIndex < currRowIndex && evaluations[rowIndex] ? (
               <motion.div
-                key={letterIndex + evaluationGuesses[rowIndex]}
+                key={letterIndex + evaluations[rowIndex]}
                 variants={
-                  gameState.boardState[rowIndex] === gameState.solution
+                  boardState[rowIndex] === solution
                     ? cellWinVariants
                     : cellVariants
                 }
@@ -100,7 +103,6 @@ function generateRow(
                   rowIndex={rowIndex}
                   letterIndex={letterIndex}
                   gameState={gameState}
-                  evaluationGuesses={evaluationGuesses}
                   currRowIndex={currRowIndex}
                   currGuess={currGuess}
                   infoMsg={infoMsg}
@@ -124,7 +126,6 @@ function generateRow(
                     rowIndex={rowIndex}
                     letterIndex={letterIndex}
                     gameState={gameState}
-                    evaluationGuesses={evaluationGuesses}
                     currRowIndex={currRowIndex}
                     currGuess={currGuess}
                     infoMsg=""
@@ -140,7 +141,6 @@ function generateRow(
 
 export default function Grid({
   gameState,
-  evaluationGuesses,
   wordLength,
   currRowIndex,
   numOfRows,
@@ -157,7 +157,6 @@ export default function Grid({
           generateRow(
             rowIndex,
             gameState,
-            evaluationGuesses,
             wordLength,
             currRowIndex,
             currGuess,

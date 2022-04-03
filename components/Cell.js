@@ -43,10 +43,12 @@ export default function Cell({
   rowIndex,
   letterIndex,
   gameState,
-  evaluationGuesses,
   currRowIndex,
   currGuess,
 }) {
+  let { evaluations } = gameState;
+  // evaluations is an added property - if it does not exist - set to empty array
+  if (evaluations === undefined) evaluations = [];
   const { highContrastMode } = useContext(HighContrastModeContext);
   return (
     <Box
@@ -65,9 +67,9 @@ export default function Cell({
         backgroundColor:
           // color guessed words
           // check if evalutations for row exists
-          rowIndex < currRowIndex && evaluationGuesses[rowIndex]
+          rowIndex < currRowIndex && evaluations[rowIndex]
             ? `${determineColor(
-                evaluationGuesses[rowIndex][letterIndex],
+                evaluations[rowIndex][letterIndex],
                 highContrastMode
               )}`
             : 'var(--color-background)',

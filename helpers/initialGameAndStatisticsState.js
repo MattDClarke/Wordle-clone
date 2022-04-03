@@ -1,5 +1,6 @@
 export const gameStateInitial = {
   boardState: [],
+  evaluations: [],
   solution: '',
   lastSolutionFetchDate: null,
   lastWonTs: null,
