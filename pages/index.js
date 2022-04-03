@@ -123,7 +123,9 @@ export default function Index() {
                   minutes={minutes}
                   seconds={seconds}
                 />
-                {gameStatus === 'win' && <ShareButton />}
+                {gameStatus === 'win' && (
+                  <ShareButton evaluations={gameState.evaluations} />
+                )}
               </Box>
             </div>
           ) : (
