@@ -70,9 +70,8 @@ function generateRow(
   infoMsg
 ) {
   const { boardState, solution } = gameState;
-  let { evaluations } = gameState;
-  // evaluations is an added property - if it does not exist - set to empty array
-  if (evaluations === undefined) evaluations = [];
+  // evaluations is an added property - if it does not exist (undefined) - set to empty array
+  const { evaluations = [] } = gameState;
   return (
     <div
       key={

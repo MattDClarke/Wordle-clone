@@ -46,9 +46,8 @@ export default function Cell({
   currRowIndex,
   currGuess,
 }) {
-  let { evaluations } = gameState;
-  // evaluations is an added property - if it does not exist - set to empty array
-  if (evaluations === undefined) evaluations = [];
+  // evaluations is an added property - if it does not exist (undefined) - set to empty array
+  const { evaluations = [] } = gameState;
   const { highContrastMode } = useContext(HighContrastModeContext);
   return (
     <Box
