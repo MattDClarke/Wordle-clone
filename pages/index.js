@@ -54,7 +54,7 @@ export default function Index() {
   const [countDownVals, setCountDownVals] = useState([null, null, null]);
   const [hours, minutes, seconds] = countDownVals;
 
-  const [delay, setDelay] = useState(1000);
+  const [delay] = useState(1000);
   // made it a ref because updating it in Wordle.js (before and after API call)
   // caused issue with index.js re-render
   const isRunning = useRef(true);

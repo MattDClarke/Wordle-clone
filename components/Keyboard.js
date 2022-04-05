@@ -82,6 +82,8 @@ export default function Keyboard({
                   sx={{
                     color: 'var(--color-text)',
                     backgroundColor: buttonColor,
+                    transition: 'background-color 3s ease',
+
                     minWidth: 0,
                     padding: '1rem 0.25rem',
                     width: '90%',
