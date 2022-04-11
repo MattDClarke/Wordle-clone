@@ -51,14 +51,19 @@ function Wordle({
       // pause countdown timer
       isRunning.current = false;
       setLoading(true);
+
+      // get yesterdays date - to check if curr streak must be reset
+      const date = new Date();
+      date.setDate(date.getDate() - 1);
+      const yesterdaysDate = date.toLocaleDateString('en-GB');
+
       fetch(`api/random-num?date=${currDate}`)
         .then((res) => res.json())
         .then((dta) => {
           // use number to get word of the day from wordList
           // set in local storage
-          setGameState((prevState) => {
+          setGameState(() => {
             const newGameState = {
-              ...prevState,
               // reset game
               boardState: [],
               evaluations: [],
@@ -66,6 +71,20 @@ function Wordle({
               solution: wordList[dta.randomNum].toUpperCase(),
             };
             return newGameState;
+          });
+
+          // reset current streak if last time won was more than 1 day ago
+          setStatisticsState((prevState) => {
+            const { lastWonTs, currentStreak } = prevState;
+            const lastWonDate = new Date(parseInt(lastWonTs));
+            const lastWonDateStr = lastWonDate.toLocaleDateString('en-GB');
+
+            const newStatisticsState = {
+              ...prevState,
+              currentStreak:
+                lastWonDateStr === yesterdaysDate ? currentStreak : 0,
+            };
+            return newStatisticsState;
           });
         })
         .catch(() => {
@@ -90,6 +109,7 @@ function Wordle({
     [
       setGameStatus,
       setGameState,
+      setStatisticsState,
       setCountDownMsRemaining,
       isRunning,
       setCountDownFinished,
@@ -204,7 +224,7 @@ function Wordle({
   }
 
   function handleKey(key) {
-    const { boardState, evaluations, solution, lastWonTs } = gameState;
+    const { boardState, evaluations, solution } = gameState;
     const boardStateLen = boardState.length;
     if (boardStateLen === 6) {
       return;
@@ -326,31 +346,32 @@ function Wordle({
 
       // Win
       if (currGuess === solution) {
-        // get last won date
-        const lastWonDate = new Date(lastWonTs);
-        lastWonDate.setDate(lastWonDate.getDate() + 1);
-        const lastWonDateFormatted = lastWonDate.toLocaleDateString('en-GB');
-        const currentDate = new Date();
-        const currentDateFormatted = currentDate.toLocaleDateString('en-GB');
-        let incCurrentStreak = false;
-        // lastWonDateFormatted === '02/01/1970' if lastWonDate === null (initial value)
-        if (
-          lastWonDateFormatted === currentDateFormatted ||
-          lastWonDateFormatted === '02/01/1970'
-        ) {
-          incCurrentStreak = true;
-        }
-        setGameState((prevState) => {
-          const newGameState = {
-            ...prevState,
-            lastWonTs: currentDate.getTime(),
-          };
-          return newGameState;
-        });
         // update Stats
         setStatisticsState((prevState) => {
-          let { gamesWon, gamesPlayed, guesses, currentStreak, maxStreak } =
-            prevState;
+          let {
+            gamesWon,
+            gamesPlayed,
+            guesses,
+            currentStreak,
+            maxStreak,
+            lastWonTs,
+          } = prevState;
+
+          // get last won date
+          const lastWonDate = new Date(lastWonTs);
+          lastWonDate.setDate(lastWonDate.getDate() + 1);
+          const lastWonDateFormatted = lastWonDate.toLocaleDateString('en-GB');
+          const currentDate = new Date();
+          const currentDateFormatted = currentDate.toLocaleDateString('en-GB');
+          let incCurrentStreak = false;
+          // lastWonDateFormatted === '02/01/1970' if lastWonDate === null (initial value)
+          if (
+            lastWonDateFormatted === currentDateFormatted ||
+            lastWonDateFormatted === '02/01/1970'
+          ) {
+            incCurrentStreak = true;
+          }
+
           const numGuesses = (boardStateLen + 1).toString();
           let prevGuessNum = prevState.guesses[boardStateLen + 1];
 
@@ -373,6 +394,7 @@ function Wordle({
               incCurrentStreak && currentStreak > maxStreak
                 ? currentStreak
                 : maxStreak,
+            lastWonTs: currentDate.getTime(),
           };
           return newStatisticsState;
         });
