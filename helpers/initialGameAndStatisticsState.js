@@ -3,6 +3,7 @@ export const gameStateInitial = {
   evaluations: [],
   solution: '',
   lastSolutionFetchDate: null,
+  lastWonTs: null,
 };
 
 export const statisticsStateInitial = {
@@ -21,5 +22,4 @@ export const statisticsStateInitial = {
   currentStreak: 0,
   maxStreak: 0,
   lastPlayedTs: null,
-  lastWonTs: null,
 };
