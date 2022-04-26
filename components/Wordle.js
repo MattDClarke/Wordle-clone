@@ -200,7 +200,7 @@ function Wordle({
     const totalNumGuesses = Object.values(guesses)
       .slice(0, -1)
       .reduce((total, num, i) => total + num * (i + 1), 0);
-    return Math.floor((totalNumGuesses + currNumGuesses) / gamesPlayed);
+    return Math.ceil((totalNumGuesses + currNumGuesses) / gamesPlayed);
   }
 
   function handleKey(key) {
