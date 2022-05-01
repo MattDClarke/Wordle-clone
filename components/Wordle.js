@@ -200,11 +200,11 @@ function Wordle({
     [gameState?.solution, setGameStatus]
   );
 
-  function calcAvgGuesses(guesses, gamesPlayed, currNumGuesses) {
+  function calcAvgGuesses(guesses, gamesWon, currNumGuesses) {
     const totalNumGuesses = Object.values(guesses)
       .slice(0, -1)
       .reduce((total, num, i) => total + num * (i + 1), 0);
-    return Math.ceil((totalNumGuesses + currNumGuesses) / gamesPlayed);
+    return Math.round((totalNumGuesses + currNumGuesses) / gamesWon);
   }
 
   function handleKey(key) {
@@ -363,7 +363,7 @@ function Wordle({
             // add 1 for curr game (not added yet... using prev state) and add curr num of guesses to get solution
             averageGuesses: calcAvgGuesses(
               guesses,
-              gamesPlayed + 1,
+              gamesWon + 1,
               boardStateLen + 1
             ),
             gamesWon: (gamesWon += 1),
