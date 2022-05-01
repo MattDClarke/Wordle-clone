@@ -53,28 +53,27 @@ function Wordle({
       setLoading(true);
       fetch(`api/random-num?date=${currDate}`)
         .then((res) => res.json())
-        .then((dta) => {
-          // use number to get word of the day from wordList
-          // set in local storage
-          setGameState((prevState) => {
-            const newGameState = {
-              ...prevState,
-              // reset game
-              boardState: [],
-              evaluations: [],
-              lastSolutionFetchDate: currDate,
-              solution: wordList[dta.randomNum].toUpperCase(),
-            };
-            return newGameState;
-          });
+        .then((data) => {
+          const randomNum = data?.randomNum;
+          if (randomNum) {
+            // use number to get word of the day from wordList
+            // set in local storage
+            setGameState((prevState) => {
+              const newGameState = {
+                ...prevState,
+                // reset game
+                boardState: [],
+                evaluations: [],
+                lastSolutionFetchDate: currDate,
+                solution: wordList[data.randomNum].toUpperCase(),
+              };
+              return newGameState;
+            });
+          } else {
+            return Promise.reject(new Error('Server error: Problem fetching daily word'))
+          }
         })
-        .catch(() => {
-          setErrorMsg('Server error: Problem fetching daily word');
-          setCountErrorMsgs((prevCount) => prevCount + 1);
-          // prevent game being played
-          setGameStatus('');
-        })
-        .finally(() => {
+       .finally(() => {
           const currentDate = new Date();
           const currTs = currentDate.getTime();
           currentDate.setHours(24, 0, 0, 0); // next midnight
@@ -85,7 +84,12 @@ function Wordle({
           // // re-start interval timer
           isRunning.current = true;
           setLoading(false);
-        });
+        }).catch(() => {
+          setErrorMsg('Server error: Problem fetching daily word');
+          setCountErrorMsgs((prevCount) => prevCount + 1);
+          // prevent game being played
+          setGameStatus('');
+      });
     },
     [
       setGameStatus,
